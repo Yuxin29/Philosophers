@@ -28,7 +28,10 @@ pthread_t	*create_threads(t_table *philo_table);
 void		joint_all_threads(pthread_t *tids, t_table *philo_table);
 
 // utils.c
-int			ft_atoi(char *nptr);
+int	        safe_atoi(char *nptr);
+
+//err_msg.c
+int err_return_int(char *str, int i);
 
 //philo.c
 //int main(int argc, char **argv)

@@ -20,7 +20,7 @@ OBJ_DIR := obj
 
 # Sources
 SRCS := \
-	$(SRC_DIR)/philo.c $(SRC_DIR)/init.c $(SRC_DIR)/utils.c\
+	$(SRC_DIR)/philo.c $(SRC_DIR)/init.c $(SRC_DIR)/utils.c $(SRC_DIR)/err_msg.c \
 
 OBJS := $(SRCS:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
 

@@ -16,17 +16,19 @@ typedef struct s_table
 {
 	int		nbr;
 	int		to_die_time;
-    int     eat_time;
-    int     sleep_time;
-    int     total_eating_time;
+	int		eat_time;
+	int		sleep_time;
+	int		total_eating_time;
 }			t_table;
 
 //init.c
 // I parse the input and put it to the t_table
-void get_table(t_table *table, char **argv);
+void		get_table(t_table *table, char **argv);
+pthread_t	*create_threads(t_table *philo_table);
+void		joint_all_threads(pthread_t *tids, t_table *philo_table);
 
 // utils.c
-int	ft_atoi(char *nptr);
+int			ft_atoi(char *nptr);
 
 //philo.c
 //int main(int argc, char **argv)

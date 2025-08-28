@@ -26,13 +26,15 @@ typedef struct s_philo
 //struct
 typedef struct s_table
 {
-	int		nbr;			//nbr of philos
-	int		to_die_time;	//need to eat or die
-	int		eat_time;		//the time spent for each meal 
-	int		sleep_time;		//the time spent for echo sleep
-	int		total_eating_time;	//if all philos has eated this number, ends
-	t_philo *philos;
-}			t_table;
+	int					nbr;			//nbr of philos
+	int					to_die_time;	//need to eat or die
+	int					eat_time;		//the time spent for each meal 
+	int					sleep_time;		//the time spent for echo sleep
+	int					total_eating_time;	//if all philos has eated this number, ends
+	t_philo				*philos;
+	pthread_mutex_t		*forks; //same amount as philos
+	pthread_mutex_t		printf_lock; //only one, for evoiding printf overlapping each other
+}						t_table;
 
 //philo.c
 //int main(int argc, char **argv)

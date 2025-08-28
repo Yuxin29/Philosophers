@@ -18,7 +18,15 @@ tids: Thread IDs
 Day 2
 --------------
 mutex: protect the shared recource, that avery moment, it is used by only one process
+how to use the data type pthread_mutex_lock
+
+pthread_mutex_t lock;
+pthread_mutex_init(&lock, NULL);
+pthread_mutex_lock(&lock);
+pthread_mutex_unlock(&lock);
+pthread_mutex_destroy(&lock);
+
 --------------
-forks: shared resource
---------------
-pthread_mutex_t *forks  //forks[i] is the name of cheach foel
+pthread_mutex_lock	*forks;         //same amount as philos   --->make sure each fork is taken once at a time
+pthread_mutex_lock	*printf_lock;   //only one,    ---> make sure printf happens once at a time 
+

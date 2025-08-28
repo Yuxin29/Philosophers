@@ -13,12 +13,12 @@ static void init_table_ints(char **argv, t_table *table)
         table->total_eating_time = -1;
 }
 
-static void init_philos(int   nbr, t_table *table)
+static void init_philos(t_table *table)
 {
     int i;
 
     i = 0;
-    while(i < nbr - 1)
+    while(i < table->nbr - 1)
     {
         table->philos[i].id = i;
         table->philos[i].fork_l = i;
@@ -34,6 +34,20 @@ static void init_philos(int   nbr, t_table *table)
     table->philos[i].table = table;
 }
 
+static void init_mutex(t_table *table)
+{
+    int i;
+
+    i = 0;
+    pthread_mutex_init(&table->printf_lock, NULL);
+    while (i < table->nbr)
+    {
+        pthread_mutex_init(&table->forks[i], NULL);
+        i++;
+    }
+    return ;
+}
+
 // pthread_create: create a new pthread
 // SYNOPSIS  
 // int pthread_create(pthread_t *thread,
@@ -41,7 +55,10 @@ static void init_philos(int   nbr, t_table *table)
 //                     void *(*start_routine)(void *),
 //                     void *arg);
 // param: id address, attribute, prt to a function, arg
-static void create_threads(t_table *philo_table)
+// pthread_join: join with a terminated thread
+// SYNOPSIS  
+// int pthread_join(pthread_t thread, void **retval);
+static void create_and_join_threads(t_table *philo_table)
 {
     int i;
 
@@ -51,16 +68,6 @@ static void create_threads(t_table *philo_table)
         pthread_create(&philo_table->philos[i].thread, NULL, thread_fn, &philo_table->philos[i]);
         i++;
     }
-    return ;
-}
-
-// pthread_join: join with a terminated thread
-// SYNOPSIS  
-// int pthread_join(pthread_t thread, void **retval);
-static void joint_all_threads(t_table *philo_table)
-{
-    int i;
-
     i = 0;
     while (i < philo_table->nbr)
     {
@@ -84,15 +91,16 @@ t_table *init_table(char **argv)
     }
     init_table_ints(argv, table);
     table->philos = malloc(sizeof(t_philo) * table->nbr);
-    if (!table->philos)
+    table->forks = malloc(sizeof(pthread_mutex_t) * table->nbr);
+    if (!table->philos || !table->forks)
     {
-        free(table);
+        ft_free_table(table);
         printf("%s\n", "malloc inside table failed");
         return (NULL);
     }
-    init_philos(table->nbr, table);
-    create_threads(table);
-    joint_all_threads(table);
+    init_philos(table);
+    init_mutex(table);
+    create_and_join_threads(table);
     return (table);
 }
 

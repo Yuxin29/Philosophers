@@ -14,6 +14,8 @@ void ft_free_table(t_table *table)
         return ;
     if (table->philos)
         free(table->philos); 
+    if (table->forks)
+        free(table->forks); 
     return ;
 }
 

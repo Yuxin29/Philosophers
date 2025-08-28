@@ -1,7 +1,4 @@
-threads
-mutexes
-
-
+Day 1
 ------------
 how to compile it.
 ./philo number_of_philosophers time_to_die time_to_eat time_to_sleep [number_of_times_each_philosopher_must_eat]
@@ -13,6 +10,15 @@ example output
 789     2           is thinking
 999     2           died
 time    philoid     action
-
+--------------
 pthread_t   variable type for POSIX process id
 tids: Thread IDs
+
+
+Day 2
+--------------
+mutex: protect the shared recource, that avery moment, it is used by only one process
+--------------
+forks: shared resource
+--------------
+pthread_mutex_t *forks  //forks[i] is the name of cheach foel

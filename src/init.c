@@ -24,12 +24,50 @@ static void init_philos(int   nbr, t_table *table)
         table->philos[i].fork_l = i;
         table->philos[i].fork_r = i + 1;
         table->philos[i].meals_eaten = 0;
+        table->philos[i].table = table;
         i++;
     }
     table->philos[i].id = i;
     table->philos[i].fork_l = i;
     table->philos[i].fork_r = 0;
     table->philos[i].meals_eaten = 0;
+    table->philos[i].table = table;
+}
+
+// pthread_create: create a new pthread
+// SYNOPSIS  
+// int pthread_create(pthread_t *thread,
+//                     const pthread_attr_t *attr,
+//                     void *(*start_routine)(void *),
+//                     void *arg);
+// param: id address, attribute, prt to a function, arg
+static void create_threads(t_table *philo_table)
+{
+    int i;
+
+    i = 0;
+    while (i < philo_table->nbr)
+    {
+        pthread_create(&philo_table->philos[i].thread, NULL, thread_fn, &philo_table->philos[i]);
+        i++;
+    }
+    return ;
+}
+
+// pthread_join: join with a terminated thread
+// SYNOPSIS  
+// int pthread_join(pthread_t thread, void **retval);
+static void joint_all_threads(t_table *philo_table)
+{
+    int i;
+
+    i = 0;
+    while (i < philo_table->nbr)
+    {
+        pthread_join((long)philo_table->philos[i].thread, NULL);
+        i++;
+    }
+    return ;
 }
 
 // argv prechecked
@@ -53,55 +91,8 @@ t_table *init_table(char **argv)
         return (NULL);
     }
     init_philos(table->nbr, table);
+    create_threads(table);
+    joint_all_threads(table);
     return (table);
 }
 
-// for testing
-// later, it should be start_routine, the eat, think and sleep routine
-static void *thread_fn(void *arg)
-{
-    long id = (long)arg;
-    pthread_t tid = pthread_self();
-    printf("Philosopher %ld, thread ID = %lu\n", id + 1, (unsigned long)tid);
-    return NULL;
-}
-
-// pthread_create: create a new pthread
-// SYNOPSIS  
-// int pthread_create(pthread_t *thread,
-//                     const pthread_attr_t *attr,
-//                     void *(*start_routine)(void *),
-//                     void *arg);
-// param: id address, attribute, prt to a function, arg
-pthread_t *create_threads(t_table *philo_table)
-{
-    int i;
-    pthread_t *tids;
-
-    i = 0;
-    tids = malloc(sizeof(pthread_t) * philo_table->nbr);
-    if (!tids)
-        return (NULL);
-    while (i < philo_table->nbr)
-    {
-        pthread_create(&tids[i], NULL, thread_fn, (void *)(long)i);
-        i++;
-    }
-    return (tids);
-}
-
-// pthread_join: join with a terminated thread
-// SYNOPSIS  
-// int pthread_join(pthread_t thread, void **retval);
-void joint_all_threads(pthread_t *tids, t_table *philo_table)
-{
-    int i;
-
-    i = 0;
-    while (i < philo_table->nbr)
-    {
-        pthread_join((long)tids[i], NULL);
-        i++;
-    }
-    return ;
-}

@@ -11,13 +11,17 @@
 # include <pthread.h> // pthread_create, pthread_detach, pthread_join, 
 // pthread_mutex_init, pthread_mutex_destroy, pthread_mutex_lock. pthread_mutex_unlocK
 
+typedef struct s_table t_table;
+
 typedef struct s_philo
 {
-	int		id; //the nbr of philos: eg -
-	int		fork_l;	//eg: 0
-	int		fork_r;	//eg: 1
-	int		meals_eaten; // already eaten meals;
-}			t_philo;
+	int			id; //the nbr of philos: eg -
+	int			fork_l;	//eg: 0
+	int			fork_r;	//eg: 1
+	int			meals_eaten; // already eaten meals;
+	pthread_t	thread;
+	t_table		*table;
+}				t_philo;
 
 //struct
 typedef struct s_table
@@ -30,19 +34,23 @@ typedef struct s_table
 	t_philo *philos;
 }			t_table;
 
-// init.c
-// I parse the input and put it to the t_table
-t_table *init_table(char **argv);
-pthread_t	*create_threads(t_table *philo_table);
-void		joint_all_threads(pthread_t *tids, t_table *philo_table);
-
-// utils.c
-int	        safe_atoi(char *nptr);
-
-//err_msg.c
-int err_return_int(char *str, int i);
-
 //philo.c
 //int main(int argc, char **argv)
+
+// prechecking.c		4/5
+int	        safe_atoi(char *nptr);
+int    		pre_check_argv(int argc, char **argv);
+
+// init.c				5/5
+// I parse the input and put it to the t_table
+t_table *init_table(char **argv);
+
+//routine,c
+void *thread_fn(void *arg); // not meaningful, redifine later
+
+//err_msg.c				3/5
+int err_return_int(char *str, int i);
+// free philos
+void ft_free_table(t_table *table);
 
 #endif

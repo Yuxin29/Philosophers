@@ -18,3 +18,15 @@ uint64_t now_ms(void)
     time_ms = (current_time.tv_sec * 1000) + (current_time.tv_sec / 1000);
     return (time_ms);
 }
+
+void ft_to_sleep(t_table *table, t_philo *philo)
+{
+    (void)philo; 
+    uint64_t    end_time;
+    useconds_t  sleep_period;
+
+    sleep_period = table->sleep_time * 1000;
+    end_time = (uint64_t)(table->sleep_time * 1000) + now_ms();
+    usleep(sleep_period);
+}
+

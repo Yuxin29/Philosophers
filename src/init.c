@@ -66,7 +66,7 @@ static void create_and_join_threads(t_table *philo_table)
     i = 0;
     while (i < philo_table->nbr)
     {
-        pthread_create(&philo_table->philos[i].thread, NULL, thread_fn, &philo_table->philos[i]);
+        pthread_create(&philo_table->philos[i].thread, NULL, routine, &philo_table->philos[i]);
         i++;
     }
     i = 0;

@@ -53,18 +53,18 @@ int    		pre_check_argv(int argc, char **argv);
 
 // init.c				5/5
 // I parse the input and put it to the t_table
-t_table *init_table(char **argv);
-
+t_table		*init_table(char **argv);
 
 // time.c
-uint64_t now_ms(void);
+uint64_t	now_ms(void);
+void		ft_to_sleep(t_table *table, t_philo *philo);
 
 //routine,c
-void *thread_fn(void *arg); // not meaningful, redifine later
+void		*routine(void *arg); // not meaningful, redifine later
 
 //err_msg.c				3/5
-int err_return_int(char *str, int i);
+int			err_return_int(char *str, int i);
 // free philos
-void ft_free_table(t_table *table);
+void		ft_free_table(t_table *table);
 
 #endif

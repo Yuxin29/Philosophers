@@ -57,7 +57,7 @@ t_table		*init_table(char **argv);
 
 // time.c
 uint64_t	now_ms(void);
-void		ft_to_sleep(t_table *table, t_philo *philo);
+uint64_t ft_to_sleep(t_table *table, t_philo *philo);
 
 //routine,c
 void		*routine(void *arg); // not meaningful, redifine later

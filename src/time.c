@@ -15,18 +15,23 @@ uint64_t now_ms(void)
 
     if (gettimeofday(&current_time, NULL) == -1)
         return (0);  // my error code
-    time_ms = (current_time.tv_sec * 1000) + (current_time.tv_sec / 1000);
+    time_ms = (current_time.tv_sec * 1000) + (current_time.tv_usec / 1000);
     return (time_ms);
 }
 
-void ft_to_sleep(t_table *table, t_philo *philo)
+uint64_t ft_to_sleep(t_table *table, t_philo *philo)
 {
     (void)philo; 
+    uint64_t    current_time;
     uint64_t    end_time;
     useconds_t  sleep_period;
 
+    current_time = now_ms();
+    if (!current_time)
+        return (0);
     sleep_period = table->sleep_time * 1000;
-    end_time = (uint64_t)(table->sleep_time * 1000) + now_ms();
+    end_time = (uint64_t)sleep_period + current_time;
     usleep(sleep_period);
+    return (end_time);
 }
 

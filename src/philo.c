@@ -23,15 +23,19 @@ static void ft_print_philos_thread(t_table  *table)
         i++;
     }
     printf("ptr address of the printf_lock is %p\n", (void *)&table->printf_lock);
+    printf("%s\n\n", "-----done that's all ----");
 }
 
 static void ft_print_table(t_table  *table)
 {
+    printf("%s\n", "");
+    printf("%s\n", "-----here is info of the table ----");
     printf("number of philos on the table is %d\n", table->nbr);
     printf("if the philo does not eat in %d seconds, he will die\n", table->to_die_time);
     printf("each meal takes %d seconds to eat\n", table->eat_time);
     printf("each sleep takes %d seconds\n", table->sleep_time);
     printf("if all philos has eaten %d meals, table ends\n", table->total_eating_time);
+    printf("%s\n", "");
     printf("%s\n", "-----here is info for each philo----");
     printf("The starting time of the table is %lu\n", table->starting_time_ms);
     ft_print_philos_thread(table);

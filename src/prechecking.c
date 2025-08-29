@@ -1,14 +1,9 @@
 #include "philo.h"
 
-static int ft_is_digit(char c)
-{
-	if (c < '0' || c > '9')
-		return (0);
-	return (1);
-}
-
 static int ft_is_pos_int(char *nptr)
 {
+	char c;
+
 	while (*nptr == ' ' || (*nptr >= '\t' && *nptr <= '\r'))
 		nptr++;
 	if (*nptr == '-') // minus
@@ -19,7 +14,8 @@ static int ft_is_pos_int(char *nptr)
 		return (0);
 	while (*nptr)
 	{
-		if (!ft_is_digit(*nptr))
+		c = *nptr;
+		if (c < '0' || c > '9')
 			return (0);
 		nptr++;
 	}

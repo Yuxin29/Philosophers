@@ -10,12 +10,22 @@
 
 void ft_free_table(t_table *table)
 {
+    int i;
+
+    i = 0;
     if (!table)
         return ;
     if (table->philos)
         free(table->philos); 
+    while (i < table->nbr)
+    {
+        pthread_mutex_destroy(&table->forks[i]);
+        i++;
+    }    
     if (table->forks)
-        free(table->forks); 
+        free(table->forks);
+    pthread_mutex_destroy(&table->printf_lock);
+    free (table);
     return ;
 }
 

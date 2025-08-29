@@ -3,7 +3,7 @@
 
 // for testing, delete later
 //-------------------------------------------------------------------->
-static void ft_print_philos(t_table  *table)
+static void ft_print_philos_thread(t_table  *table)
 {
     int i;
 
@@ -16,6 +16,13 @@ static void ft_print_philos(t_table  *table)
         printf("this philo has eatedn %d meals so far\n", table->philos[i].meals_eaten);
         i++;
     }
+    i = 0;
+    while (i < table->nbr)
+    {
+        printf("ptr address of the forks is %p\n", (void *)&table->forks[i]);
+        i++;
+    }
+    printf("ptr address of the printf_lock is %p\n", (void *)&table->printf_lock);
 }
 
 static void ft_print_table(t_table  *table)
@@ -26,7 +33,8 @@ static void ft_print_table(t_table  *table)
     printf("each sleep takes %d seconds\n", table->sleep_time);
     printf("if all philos has eaten %d meals, table ends\n", table->total_eating_time);
     printf("%s\n", "-----here is info for each philo----");
-    ft_print_philos(table);
+    ft_print_philos_thread(table);
+
 }
 //-------------------------------------------------------------------->
 

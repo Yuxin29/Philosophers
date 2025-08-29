@@ -3,13 +3,20 @@
 #ifndef PHILO_H
 # define PHILO_H
 
+# include <stdint.h> //uint64_t
 # include <sys/time.h> //gettimeofday
 # include <string.h> //memset
 # include <unistd.h> //usleep, write
 # include <stdio.h> //printf
-# include <stdlib.h> //malloc. free  , gettimeofday
+# include <stdlib.h> //malloc. free, gettimeofday
 # include <pthread.h> // pthread_create, pthread_detach, pthread_join, 
 // pthread_mutex_init, pthread_mutex_destroy, pthread_mutex_lock. pthread_mutex_unlocK
+
+//this is not needed, here just for info
+// struct timeval {
+//     time_t      tv_sec;   // s
+//     suseconds_t tv_usec;  // 1µs (1µs = 10^-6 s)
+// };
 
 typedef struct s_table t_table;
 
@@ -31,6 +38,7 @@ typedef struct s_table
 	int					eat_time;		//the time spent for each meal 
 	int					sleep_time;		//the time spent for echo sleep
 	int					total_eating_time;	//if all philos has eated this number, ends
+	uint64_t			starting_time_ms;  // this is needed
 	t_philo				*philos;
 	pthread_mutex_t		*forks; //same amount as philos
 	pthread_mutex_t		printf_lock; //only one, for evoiding printf overlapping each other
@@ -46,6 +54,10 @@ int    		pre_check_argv(int argc, char **argv);
 // init.c				5/5
 // I parse the input and put it to the t_table
 t_table *init_table(char **argv);
+
+
+// time.c
+uint64_t now_ms(void);
 
 //routine,c
 void *thread_fn(void *arg); // not meaningful, redifine later

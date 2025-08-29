@@ -11,6 +11,7 @@ static void init_table_ints(char **argv, t_table *table)
         table->total_eating_time = safe_atoi(argv[5]);
     else
         table->total_eating_time = -1;
+    table->starting_time_ms = now_ms();
 }
 
 static void init_philos(t_table *table)
@@ -90,6 +91,7 @@ t_table *init_table(char **argv)
         return (NULL);
     }
     init_table_ints(argv, table);
+
     table->philos = malloc(sizeof(t_philo) * table->nbr);
     table->forks = malloc(sizeof(pthread_mutex_t) * table->nbr);
     if (!table->philos || !table->forks)
@@ -98,9 +100,11 @@ t_table *init_table(char **argv)
         printf("%s\n", "malloc inside table failed");
         return (NULL);
     }
+
     init_philos(table);
     init_mutex(table);
     create_and_join_threads(table);
+
     return (table);
 }
 

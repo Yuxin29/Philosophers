@@ -33,6 +33,7 @@ static void ft_print_table(t_table  *table)
     printf("each sleep takes %d seconds\n", table->sleep_time);
     printf("if all philos has eaten %d meals, table ends\n", table->total_eating_time);
     printf("%s\n", "-----here is info for each philo----");
+    printf("The starting time of the table is %lu\n", table->starting_time_ms);
     ft_print_philos_thread(table);
 
 }

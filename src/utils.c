@@ -1,13 +1,6 @@
 /* ************************************************************************** */
 #include "philo.h"
 
-//not needed yet
-// static void ft_free_philos(t_philo *philo)
-// {
-//     ...
-//     return;
-// }
-
 void ft_free_table(t_table *table)
 {
     int i;

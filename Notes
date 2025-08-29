@@ -1,5 +1,5 @@
 Day 1
-------------
+----------------------------------
 how to compile it.
 ./philo number_of_philosophers time_to_die time_to_eat time_to_sleep [number_of_times_each_philosopher_must_eat]
 --------------
@@ -16,7 +16,7 @@ tids: Thread IDs
 
 
 Day 2
---------------
+------------------------------------
 mutex: protect the shared recource, that avery moment, it is used by only one process
 how to use the data type pthread_mutex_lock
 
@@ -28,5 +28,35 @@ pthread_mutex_destroy(&lock);
 
 --------------
 pthread_mutex_lock	*forks;         //same amount as philos   --->make sure each fork is taken once at a time
-pthread_mutex_lock	*printf_lock;   //only one,    ---> make sure printf happens once at a time 
+pthread_mutex_lock	printf_lock;   //only one,    ---> make sure printf happens once at a time 
 
+Day 3
+------------------------------------
+I am going to use millisecond,  毫秒 in my philo,
+1.
+gettimeofday, settimeofday - get / set time
+    int gettimeofday(struct timeval *tv, struct timezone *tz);  
+    --> return the time on the wall in millisecond, "real-world time"
+    --> 2nd param usually NULL. return 0 on success, -1 on fail.
+gettimeofday, settimeofday - get / set time
+    int settimeofday(const struct timeval *tv, const struct timezone *tz);
+
+1 s = 1000 ms, millisecond,  毫秒
+1 ms = 1000 us, microsecond, 微秒
+1 us = 1000 ns               纳秒
+
+单位	缩写	换算关系
+秒	    s	    1 s = 1 s
+毫秒	ms	    1 ms = 1/1,000 s = 0.001 s
+微秒	µs	    1 µs = 1/1,000,000 s = 0.000001 s
+纳秒	ns	    1 ns = 1/1,000,000,000 s = 0.000000001 s
+
+struct timeval {
+    time_t      tv_sec;   // s
+    suseconds_t tv_usec;  // 1µs (1µs = 10^-6 s)
+};
+
+--------------
+2. usleep: put the current thread into sleep for a certain us
+// suspend execution for microsecond intervals
+int usleep(usecond_t usec)  return 0 on success, -1 on fail.

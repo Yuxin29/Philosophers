@@ -6,11 +6,26 @@
 // eat
 // update meal numbers
 // put down forks(unlock then)
-// static void routine_eat(t_philo *philo)
-// {
+static void routine_eat(t_philo *philo)
+{
+    int l;
+    int r;
 
+    l = philo->fork_l;
+    r = philo->fork_r;
+    pthread_mutex_lock(&philo->table->printf_lock);
+    if (philo->id % 2 == 0)
+    {
+        pthread_mutex_lock(&philo->table->forks[l]);
+        pthread_mutex_lock(&philo->table->forks[r]);
+    }
+    printf("The philospher %d has taken 2 forks\n", philo->id);
+    printf("The philospher %d is eating\n", philo->id);
+    pthread_mutex_unlock(&philo->table->forks[l]);
+    pthread_mutex_unlock(&philo->table->forks[r]);
+    pthread_mutex_unlock(&philo->table->printf_lock);
 
-// }
+}
 
 // for testing
 // later, it should be start_routine, the eat, think and sleep routine
@@ -36,6 +51,7 @@ void *routine(void *arg)
     pthread_mutex_unlock(&philo->table->printf_lock);
 
     //eat
+    routine_eat(philo);
 
     //think
 

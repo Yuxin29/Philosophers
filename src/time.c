@@ -19,19 +19,27 @@ uint64_t now_ms(void)
     return (time_ms);
 }
 
+// returns the comparative time stamp only
 uint64_t ft_to_sleep(t_table *table, t_philo *philo)
 {
     (void)philo; 
-    uint64_t    current_time;
-    uint64_t    end_time;
+    uint64_t    timestamp;
     useconds_t  sleep_period;
-
-    current_time = now_ms();
-    if (!current_time)
-        return (0);
+    
+    timestamp = now_ms() - table->starting_time_ms;
     sleep_period = table->sleep_time * 1000;
-    end_time = (uint64_t)sleep_period + current_time;
-    usleep(sleep_period);
-    return (end_time);
+    usleep(sleep_period  * 1000); //us
+    return (timestamp);
 }
 
+uint64_t ft_to_eat(t_table *table, t_philo *philo)
+{
+    (void)philo;
+    uint64_t    timestamp;
+    useconds_t  eating_period;
+    
+    timestamp = now_ms() - table->starting_time_ms;
+    eating_period = table->eat_time * 1000;
+    usleep(eating_period  * 1000); //us
+    return (timestamp);
+}

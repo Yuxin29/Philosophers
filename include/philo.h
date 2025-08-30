@@ -27,6 +27,7 @@ typedef struct s_philo
 	int			fork_r;	//eg: 1
 	int			meals_eaten; // already eaten meals;
 	pthread_t	thread;
+	//uint64_t	last_eating_time;
 	t_table		*table;
 }				t_philo;
 
@@ -57,7 +58,8 @@ t_table		*init_table(char **argv);
 
 // time.c
 uint64_t	now_ms(void);
-uint64_t ft_to_sleep(t_table *table, t_philo *philo);
+uint64_t	ft_to_sleep(t_table *table, t_philo *philo);
+uint64_t	ft_to_eat(t_table *table, t_philo *philo);
 
 //routine,c
 void		*routine(void *arg); // not meaningful, redifine later

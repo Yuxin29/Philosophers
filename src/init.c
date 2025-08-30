@@ -25,6 +25,7 @@ static void init_philos(t_table *table)
         table->philos[i].fork_l = i;
         table->philos[i].fork_r = i + 1;
         table->philos[i].meals_eaten = 0;
+        table->philos[i].last_eating_time = table->starting_time_ms;
         table->philos[i].table = table;
         i++;
     }
@@ -32,6 +33,7 @@ static void init_philos(t_table *table)
     table->philos[i].fork_l = i;
     table->philos[i].fork_r = 0;
     table->philos[i].meals_eaten = 0;
+    table->philos[i].last_eating_time = table->starting_time_ms;
     table->philos[i].table = table;
 }
 

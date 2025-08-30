@@ -44,6 +44,13 @@ int	safe_atoi(char *nptr)
 	return (output);
 }
 
+int err_return_int(char *str, int i)
+{
+    if (str)
+        printf("%s\n", str); //should I print stderr??
+    return (i);
+}
+
 // input check
 int    pre_check_argv(int argc, char **argv)
 {

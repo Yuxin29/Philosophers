@@ -20,26 +20,20 @@ uint64_t now_ms(void)
 }
 
 // returns the comparative time stamp only
-uint64_t ft_to_sleep(t_table *table, t_philo *philo)
+void ft_to_sleep(t_table *table)
 {
-    (void)philo; 
-    uint64_t    timestamp;
     useconds_t  sleep_period;
     
-    timestamp = now_ms() - table->starting_time_ms;
     sleep_period = table->sleep_time * 1000;
-    usleep(sleep_period  * 1000); //us
-    return (timestamp);
+    usleep(sleep_period); //us
+    return ;
 }
 
-uint64_t ft_to_eat(t_table *table, t_philo *philo)
+void ft_to_eat(t_table *table)
 {
-    (void)philo;
-    uint64_t    timestamp;
     useconds_t  eating_period;
     
-    timestamp = now_ms() - table->starting_time_ms;
     eating_period = table->eat_time * 1000;
-    usleep(eating_period  * 1000); //us
-    return (timestamp);
+    usleep(eating_period); //us
+    return ;
 }

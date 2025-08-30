@@ -43,6 +43,27 @@ static void ft_print_table(t_table  *table)
 }
 //-------------------------------------------------------------------->
 
+void ft_free_table(t_table *table)
+{
+    int i;
+
+    i = 0;
+    if (!table)
+        return ;
+    if (table->philos)
+        free(table->philos); 
+    while (i < table->nbr)
+    {
+        pthread_mutex_destroy(&table->forks[i]);
+        i++;
+    }    
+    if (table->forks)
+        free(table->forks);
+    pthread_mutex_destroy(&table->printf_lock);
+    free (table);
+    return ;
+}
+
 int main(int argc, char **argv)
 {
     t_table *philo_table;
@@ -51,10 +72,10 @@ int main(int argc, char **argv)
         return(-1);
 
     philo_table = init_table(argv);
+
     if (!philo_table)
        return (-1);
-    //testing, delete later
-    ft_print_table(philo_table);
+    ft_print_table(philo_table);//testing, delete later
 
     //finishing
     ft_free_table(philo_table);

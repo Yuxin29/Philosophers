@@ -27,7 +27,7 @@ typedef struct s_philo
 	int			fork_r;	//eg: 1
 	int			meals_eaten; // already eaten meals;
 	pthread_t	thread;
-	//uint64_t	last_eating_time;
+	uint64_t	last_eating_time;
 	t_table		*table;
 }				t_philo;
 
@@ -47,7 +47,8 @@ typedef struct s_table
 
 //philo.c
 //int main(int argc, char **argv)
-
+void ft_free_table(t_table *table);
+ 
 // prechecking.c		4/5
 int	        safe_atoi(char *nptr);
 int    		pre_check_argv(int argc, char **argv);
@@ -58,15 +59,10 @@ t_table		*init_table(char **argv);
 
 // time.c
 uint64_t	now_ms(void);
-uint64_t	ft_to_sleep(t_table *table, t_philo *philo);
-uint64_t	ft_to_eat(t_table *table, t_philo *philo);
+void		ft_to_sleep(t_table *table);
+void		ft_to_eat(t_table *table);
 
 //routine,c
 void		*routine(void *arg); // not meaningful, redifine later
-
-//err_msg.c				3/5
-int			err_return_int(char *str, int i);
-// free philos
-void		ft_free_table(t_table *table);
 
 #endif

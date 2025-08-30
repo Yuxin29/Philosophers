@@ -1,7 +1,6 @@
 /* ************************************************************************** */
 #include "philo.h"
 
-
 // 123     2           has taken a fork
 // 123     2           is eating
 // 456     2           is sleeping
@@ -22,6 +21,7 @@ static void routine_eat(t_philo *philo)
 
     l = philo->fork_l;
     r = philo->fork_r;
+
     if (philo->id % 2 == 0)
     {
         pthread_mutex_lock(&philo->table->forks[l]);
@@ -33,28 +33,33 @@ static void routine_eat(t_philo *philo)
         pthread_mutex_lock(&philo->table->forks[l]);
     }
 
-    timestamp = ft_to_eat(philo->table, philo); 
+    philo->last_eating_time = now_ms();
 
+    timestamp = now_ms() - philo->table->starting_time_ms;
     //printing
     pthread_mutex_lock(&philo->table->printf_lock);
     printf("%lu, %d is eating\n", timestamp, philo->id + 1);
     pthread_mutex_unlock(&philo->table->printf_lock);
+    
+    
+    ft_to_eat(philo->table);
+    philo->meals_eaten += 1;
 
     pthread_mutex_unlock(&philo->table->forks[l]);
     pthread_mutex_unlock(&philo->table->forks[r]);
-    philo->meals_eaten += 1;
 }
 
 static void routine_sleep(t_philo *philo)
 {
     uint64_t    timestamp;
     
-    timestamp = ft_to_sleep(philo->table, philo); 
-
+    timestamp = now_ms() - philo->table->starting_time_ms;; 
     //printing
     pthread_mutex_lock(&philo->table->printf_lock);
     printf("%lu, %d is sleeping\n", timestamp, philo->id + 1);
     pthread_mutex_unlock(&philo->table->printf_lock);
+
+    ft_to_sleep(philo->table);
 }
 
 // in pholosopher, there is not given time for sleep, it does not uslepp. just print a msg
@@ -69,6 +74,23 @@ static void routine_think(t_philo *philo)
     pthread_mutex_unlock(&philo->table->printf_lock);
 }
 
+
+static int check_all_philo_done(t_table *table)
+{
+    int i;
+
+    i = 0;
+    if (table->total_eating_time == -1)
+        return (0); // no limitation, not done
+    while (i < table->nbr)
+    {
+        if (table->philos[i].meals_eaten < table->total_eating_time)
+            return (0);
+        i++;
+    }
+    return (1); //done
+}
+
 // for testing
 // later, it should be start_routine, the eat, think and sleep routine
 // routine of a philo
@@ -78,18 +100,29 @@ static void routine_think(t_philo *philo)
 void *routine(void *arg)
 {
     t_philo     *philo;
+    int         done;
 
     philo = (t_philo *)arg;
 
-    while (philo->meals_eaten < 3)
-    //later, this should be checking if it is dead
+    while (1)
     {
+        if (now_ms() - philo->last_eating_time >= (uint64_t)philo->table->to_die_time)
+        {
+            // death msg
+            break ;
+        }
+        pthread_mutex_lock(&philo->table->printf_lock);
+        done = check_all_philo_done(philo->table);
+        pthread_mutex_unlock(&philo->table->printf_lock);
+        if (done)
+        {
+            // all philos has eater wnough
+            break ;
+        }
         routine_eat(philo);
         routine_sleep(philo);
         routine_think(philo);
-        printf("The philospher %d is done for this round\n\n", philo->id + 1);
     }
-    printf("%s\n\n", "All philosophers are done with everythings");
 
     return (NULL);
 }

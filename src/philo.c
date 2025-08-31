@@ -1,83 +1,109 @@
 /* ************************************************************************** */
 #include "philo.h"
 
-// for testing, delete later
-//-------------------------------------------------------------------->
-static void ft_print_philos_thread(t_table  *table)
+// check if all philo has eateing enough
+// return 0 for not done, 1 for done
+static int	check_done(t_table *table)
 {
-    int i;
+	int			i;
+	int			n;
+	uint64_t	timestamp;
 
-    i = 0;
-    while (i < table->nbr)
-    {
-        printf("id of the philo is %d\n", table->philos[i].id);
-        printf("id of the fork on left is %d\n", table->philos[i].fork_l);
-        printf("id of the fork on right is %d\n", table->philos[i].fork_r);
-        printf("this philo has eatedn %d meals so far\n", table->philos[i].meals_eaten);
-        i++;
-    }
-    i = 0;
-    while (i < table->nbr)
-    {
-        printf("ptr address of the forks is %p\n", (void *)&table->forks[i]);
-        i++;
-    }
-    printf("ptr address of the printf_lock is %p\n", (void *)&table->printf_lock);
-    printf("%s\n\n", "-----done that's all ----");
+	i = 0;
+	if (table->total_eating_time == -1)
+		return (0);
+	while (i < table->nbr)
+	{
+		if (table->philos[i].meals_eaten < table->total_eating_time)
+			return (0);
+		i++;
+	}
+	timestamp = now_ms() - table->starting_time_ms;
+	n = table->total_eating_time;
+	pthread_mutex_lock(&table->state_lock);
+	if (!table->stop)
+		table->stop = 1;
+	pthread_mutex_unlock(&table->state_lock);
+	pthread_mutex_lock(&table->printf_lock);
+	printf("%lu, all philos ate %d times (enough)\n", timestamp, n);
+	pthread_mutex_unlock(&table->printf_lock);
+	return (1);
 }
 
-static void ft_print_table(t_table  *table)
+// check if any philo is dead
+/* ************************************************************************** */
+static int	check_dead(t_table *table)
 {
-    printf("%s\n", "");
-    printf("%s\n", "-----here is info of the table ----");
-    printf("number of philos on the table is %d\n", table->nbr);
-    printf("if the philo does not eat in %d seconds, he will die\n", table->to_die_time);
-    printf("each meal takes %d seconds to eat\n", table->eat_time);
-    printf("each sleep takes %d seconds\n", table->sleep_time);
-    printf("if all philos has eaten %d meals, table ends\n", table->total_eating_time);
-    printf("%s\n", "");
-    printf("%s\n", "-----here is info for each philo----");
-    printf("The starting time of the table is %lu\n", table->starting_time_ms);
-    ft_print_philos_thread(table);
+	int			i;
+	uint64_t	timestamp;
+	uint64_t	last_time;
 
+	i = 0;
+	while (i < table->nbr)
+	{
+		pthread_mutex_lock(&table->state_lock);
+		last_time = table->philos[i].last_eating_time;
+		if (table->stop)
+		{
+			pthread_mutex_unlock(&table->state_lock);
+			return (0);
+		}
+		pthread_mutex_unlock(&table->state_lock);
+		timestamp = now_ms() - last_time;
+		if (timestamp >= (uint64_t)table->to_die_time)
+		{
+			pthread_mutex_lock(&table->state_lock);
+			if (!table->stop)
+			{
+				table->dead = 1;
+				table->stop = 1;
+				pthread_mutex_unlock(&table->state_lock);
+				timestamp = now_ms() - table->starting_time_ms;
+				pthread_mutex_lock(&table->printf_lock);
+				printf("%lu, %d died\n", timestamp, i + 1);
+				pthread_mutex_unlock(&table->printf_lock);
+			}
+			else
+				pthread_mutex_unlock(&table->state_lock);
+			return (1);
+		}
+		i++;
+	}
+	return (0);
 }
-//-------------------------------------------------------------------->
 
-void ft_free_table(t_table *table)
+void	*monitor(void *arg)
 {
-    int i;
+	t_table	*table;
 
-    i = 0;
-    if (!table)
-        return ;
-    if (table->philos)
-        free(table->philos); 
-    while (i < table->nbr)
-    {
-        pthread_mutex_destroy(&table->forks[i]);
-        i++;
-    }    
-    if (table->forks)
-        free(table->forks);
-    pthread_mutex_destroy(&table->printf_lock);
-    free (table);
-    return ;
+    table = (t_table *)arg;
+	while (1)
+	{
+		pthread_mutex_lock(&table->state_lock);
+		if (table->stop)
+		{
+			pthread_mutex_unlock(&table->state_lock);
+			break ;
+		}
+		pthread_mutex_unlock(&table->state_lock);
+		if (check_done(table))
+			break ;
+		if (check_dead(table))
+			break ;
+		usleep(1000);
+	}
+	return (NULL);
 }
 
-int main(int argc, char **argv)
+int	main(int argc, char **argv)
 {
-    t_table *philo_table;
+	t_table	*philo_table;
 
-    if (!pre_check_argv(argc, argv))
-        return(-1);
-
-    philo_table = init_table(argv);
-
-    if (!philo_table)
-       return (-1);
-    ft_print_table(philo_table);//testing, delete later
-
-    //finishing
-    ft_free_table(philo_table);
-    return (0);
+	if (!pre_check_argv(argc, argv))
+		return (-1);
+	philo_table = init_table(argv);
+	if (!philo_table)
+		return (-1);
+	ft_free_table(philo_table);
+	return (0);
 }

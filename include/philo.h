@@ -1,4 +1,4 @@
-
+/* ************************************************************************** */
 
 #ifndef PHILO_H
 # define PHILO_H
@@ -39,17 +39,20 @@ typedef struct s_table
 	int					eat_time;		//the time spent for each meal 
 	int					sleep_time;		//the time spent for echo sleep
 	int					total_eating_time;	//if all philos has eated this number, ends
+	int					dead;				//mmonitoring if anyone dead on the table. 1 for dead
+	int					stop;				//1 for stop and not entering routine loop
 	uint64_t			starting_time_ms;  // this is needed
 	t_philo				*philos;
 	pthread_mutex_t		*forks; //same amount as philos
 	pthread_mutex_t		printf_lock; //only one, for evoiding printf overlapping each other
+	pthread_mutex_t		state_lock;  //protext stop and dead
 }						t_table;
 
 //philo.c
 //int main(int argc, char **argv)
-void ft_free_table(t_table *table);
+void *monitor(void *arg);
  
-// prechecking.c		4/5
+// preparsing.c		4/5
 int	        safe_atoi(char *nptr);
 int    		pre_check_argv(int argc, char **argv);
 
@@ -57,10 +60,11 @@ int    		pre_check_argv(int argc, char **argv);
 // I parse the input and put it to the t_table
 t_table		*init_table(char **argv);
 
-// time.c
+// utils.c
 uint64_t	now_ms(void);
 void		ft_to_sleep(t_table *table);
 void		ft_to_eat(t_table *table);
+void		ft_free_table(t_table *table);
 
 //routine,c
 void		*routine(void *arg); // not meaningful, redifine later

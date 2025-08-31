@@ -6,7 +6,7 @@
 #    By: yuwu <yuwu@student.42.fr>                  +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/06/03 16:36:29 by yuwu              #+#    #+#              #
-#    Updated: 2025/08/29 14:25:10 by yuwu             ###   ########.fr        #
+#    Updated: 2025/08/31 14:18:10 by yuwu             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -19,8 +19,8 @@ SRC_DIR := src
 OBJ_DIR := obj
 
 # Sources
-SRCS := $(SRC_DIR)/philo.c $(SRC_DIR)/init.c $(SRC_DIR)/routine.c\
-		$(SRC_DIR)/prechecking.c $(SRC_DIR)/time.c \
+SRCS := $(SRC_DIR)/preparsing.c $(SRC_DIR)/parsing.c \
+		$(SRC_DIR)/utils.c $(SRC_DIR)/routine.c $(SRC_DIR)/philo.c\
 
 OBJS := $(SRCS:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
 

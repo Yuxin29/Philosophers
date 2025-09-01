@@ -6,19 +6,19 @@
 /*   By: yuwu <yuwu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/01 18:08:28 by yuwu              #+#    #+#             */
-/*   Updated: 2025/09/01 18:08:55 by yuwu             ###   ########.fr       */
+/*   Updated: 2025/09/01 19:52:37 by yuwu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-// I am going to use millisecond,  毫秒 in my philosopher
 // struct timeval {
 //     time_t      tv_sec;   // s
 //     suseconds_t tv_usec;  // 1µs (1µs = 10^-6 s)
 // };
 // gettimeofday, settimeofday - get / set time
 //     --> return the time on the wall in millisecond, "real-world time"
+// I am going to use MACROSECOND,  us in my philosopher
 uint64_t	now_ms(void)
 {
 	struct timeval	current_time;
@@ -33,21 +33,25 @@ uint64_t	now_ms(void)
 // do a sleep
 void	ft_to_sleep(t_table *table)
 {
-	useconds_t	sleep_period;
+	uint64_t	start;
+	useconds_t	duration;
 
-	sleep_period = table->sleep_time * 1000;
-	usleep(sleep_period);
-	return ;
+	start = now_ms();
+	duration = table->sleep_time;
+	while (!table->stop && (now_ms() - start) < duration)
+		usleep(50);
 }
 
 // do a eat
 void	ft_to_eat(t_table *table)
 {
-	useconds_t	eating_period;
+	uint64_t	start;
+	useconds_t	duration;
 
-	eating_period = table->eat_time * 1000;
-	usleep(eating_period);
-	return ;
+	start = now_ms();
+	duration = table->eat_time;
+	while (!table->stop && (now_ms() - start) < duration)
+		usleep(50);
 }
 
 // free the table and philos, and destroy all the mutex

@@ -6,7 +6,7 @@
 /*   By: yuwu <yuwu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/01 18:07:36 by yuwu              #+#    #+#             */
-/*   Updated: 2025/09/01 18:09:09 by yuwu             ###   ########.fr       */
+/*   Updated: 2025/09/01 20:18:49 by yuwu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,22 +35,29 @@ static void	init_philos(t_table *table)
 	int		i;
 
 	i = 0;
-	while (i < table->nbr - 1)
+	if (table->nbr == 1)
+	{
+		table->philos[0].id = 0;
+		table->philos[0].fork_l = 0;
+		table->philos[0].fork_r = -1;
+		table->philos[0].meals_eaten = 0;
+		table->philos[0].last_eating_time = table->starting_time_ms;
+		table->philos[0].table = table;
+		return ;
+	}
+	while (i < table->nbr)
 	{
 		table->philos[i].id = i;
 		table->philos[i].fork_l = i;
-		table->philos[i].fork_r = i + 1;
+		if (i == table->nbr - 1)
+			table->philos[i].fork_r = 0;
+		else
+			table->philos[i].fork_r = i + 1;
 		table->philos[i].meals_eaten = 0;
 		table->philos[i].last_eating_time = table->starting_time_ms;
 		table->philos[i].table = table;
 		i++;
 	}
-	table->philos[i].id = i;
-	table->philos[i].fork_l = i;
-	table->philos[i].fork_r = 0;
-	table->philos[i].meals_eaten = 0;
-	table->philos[i].last_eating_time = table->starting_time_ms;
-	table->philos[i].table = table;
 }
 
 // initiate all the mutex and fork mutex
@@ -87,7 +94,8 @@ static void	create_and_join_threads(t_table *philo_table)
 	i = 0;
 	while (i < philo_table->nbr)
 	{
-		pthread_create(&philo_table->philos[i].thread, NULL, routine, &philo_table->philos[i]);
+		pthread_create(&philo_table->philos[i].thread,
+			NULL, routine, &philo_table->philos[i]);
 		i++;
 	}
 	pthread_create(&monitor_thread, NULL, monitor, philo_table);
@@ -115,15 +123,20 @@ t_table	*init_table(char **argv)
 		printf("%s\n", "malloc table failed");
 		return (NULL);
 	}
+	init_table_ints(argv, table);
 	table->philos = malloc(sizeof(t_philo) * table->nbr);
-	table->forks = malloc(sizeof(pthread_mutex_t) * table->nbr);
-	if (!table->philos || !table->forks)
+	if (!table->philos)
 	{
-		ft_free_table(table);
 		printf("%s\n", "malloc inside table failed");
 		return (NULL);
 	}
-	init_table_ints(argv, table);
+	table->forks = malloc(sizeof(pthread_mutex_t) * table->nbr);
+	if (!table->forks)
+	{
+		free(table->philos);
+		printf("%s\n", "malloc inside table failed");
+		return (NULL);
+	}
 	init_philos(table);
 	init_mutex(table);
 	create_and_join_threads(table);

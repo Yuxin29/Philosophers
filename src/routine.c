@@ -6,7 +6,7 @@
 /*   By: yuwu <yuwu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/01 18:08:19 by yuwu              #+#    #+#             */
-/*   Updated: 2025/09/01 18:17:32 by yuwu             ###   ########.fr       */
+/*   Updated: 2025/09/01 20:11:33 by yuwu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ static void	routine_eat(t_philo *philo)
 	int			first;
 	int			second;
 
-	if (precheck_stop(philo))
+	if (philo->fork_r == -1)
 		return ;
 	if (philo->fork_l < philo->fork_r)
 	{
@@ -45,6 +45,12 @@ static void	routine_eat(t_philo *philo)
 	}
 	pthread_mutex_lock(&philo->table->forks[first]);
 	pthread_mutex_lock(&philo->table->forks[second]);
+	if (precheck_stop(philo))
+	{
+		pthread_mutex_unlock(&philo->table->forks[second]);
+		pthread_mutex_unlock(&philo->table->forks[first]);
+		return ;
+	}
 	pthread_mutex_lock(&philo->table->state_lock);
 	philo->last_eating_time = now_ms();
 	philo->meals_eaten += 1;
@@ -93,6 +99,11 @@ void	*routine(void *arg)
 	t_philo		*philo;
 
 	philo = (t_philo *)arg;
+	if (philo->fork_r == -1)
+	{
+		routine_eat(philo);
+		return (NULL);
+	}
 	if (philo->id % 2)
 		usleep(500);
 	while (1)

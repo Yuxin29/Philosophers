@@ -61,7 +61,7 @@ struct timeval {
 // suspend execution for microsecond intervals
 int usleep(usecond_t usec)  return 0 on success, -1 on fail.
 
-Day 4
+Day 4 adn 5
 ------------------------------------
 Dead lock
 
@@ -86,3 +86,10 @@ their eating is not ramdom. it is arranged
                                 unlock left fork
                                 unlock right fork
                                 unlock print mutex
+
+Day 6
+------------------------------------
+edge case:
+one philosopher,
+when there is only one philo. there can not be a fork on both left and right side,
+thus, this only philo will die from the very beginning

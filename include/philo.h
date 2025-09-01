@@ -51,15 +51,16 @@ typedef struct s_table
 	int				total_eating_time;	//if all philos eated this number, ends
 	int				dead;				//monitoring if anyone dead
 	int				stop;				//1 for stop and
-	uint64_t		starting_time_ms;	// this is needed
+	uint64_t		starting_time;	// this is needed
 	t_philo			*philos;
 	pthread_mutex_t	*forks;				//same amount as philos
 	pthread_mutex_t	printf_lock;		//protext printf overlapping
 	pthread_mutex_t	state_lock;			//protext stop and dead
 }					t_table;
 
-//philo.c
+//philo.c 4/5
 //int main(int argc, char **argv)
+int 		ft_is_stoped(t_table *table);
 void		*monitor(void *arg);
 
 // preparsing.c		4/5
@@ -70,13 +71,13 @@ int			pre_check_argv(int argc, char **argv);
 // I parse the input and put it to the t_table
 t_table		*init_table(char **argv);
 
-// utils.c
+// utils.c	4/5
 uint64_t	now_ms(void);
 void		ft_to_sleep(t_table *table);
 void		ft_to_eat(t_table *table);
 void		ft_free_table(t_table *table);
 
-//routine.c
+//routine.c 5/5
 void		*routine(void *arg); // not meaningful, redifine later
 
 #endif

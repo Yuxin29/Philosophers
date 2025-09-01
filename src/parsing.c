@@ -26,7 +26,7 @@ static void	init_table_ints(char **argv, t_table *table)
 		table->total_eating_time = -1;
 	table->dead = 0;
 	table->stop = 0;
-	table->starting_time_ms = now_ms();
+	table->starting_time = now_ms();
 }
 
 // refill all the philos around the table
@@ -35,26 +35,18 @@ static void	init_philos(t_table *table)
 	int		i;
 
 	i = 0;
-	if (table->nbr == 1)
-	{
-		table->philos[0].id = 0;
-		table->philos[0].fork_l = 0;
-		table->philos[0].fork_r = -1;
-		table->philos[0].meals_eaten = 0;
-		table->philos[0].last_eating_time = table->starting_time_ms;
-		table->philos[0].table = table;
-		return ;
-	}
 	while (i < table->nbr)
 	{
 		table->philos[i].id = i;
 		table->philos[i].fork_l = i;
-		if (i == table->nbr - 1)
+		if (table->nbr == 1)
+			table->philos[i].fork_r = -1;
+		else if (i == table->nbr - 1)
 			table->philos[i].fork_r = 0;
 		else
 			table->philos[i].fork_r = i + 1;
 		table->philos[i].meals_eaten = 0;
-		table->philos[i].last_eating_time = table->starting_time_ms;
+		table->philos[i].last_eating_time = table->starting_time;
 		table->philos[i].table = table;
 		i++;
 	}
@@ -119,17 +111,11 @@ t_table	*init_table(char **argv)
 
 	table = malloc(sizeof(t_table) * 1);
 	if (!table)
-	{
-		printf("%s\n", "malloc table failed");
-		return (NULL);
-	}
+		return (printf("%s\n", "malloc table failed"), NULL);
 	init_table_ints(argv, table);
 	table->philos = malloc(sizeof(t_philo) * table->nbr);
 	if (!table->philos)
-	{
-		printf("%s\n", "malloc inside table failed");
-		return (NULL);
-	}
+		return (printf("%s\n", "malloc inside table failed"), NULL);
 	table->forks = malloc(sizeof(pthread_mutex_t) * table->nbr);
 	if (!table->forks)
 	{

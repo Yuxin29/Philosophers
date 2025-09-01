@@ -60,25 +60,26 @@ int	safe_atoi(char *nptr)
 	return (output);
 }
 
-// printf("%s\n", str); 
-//should I print stderr??
-int	err_return_int(char *str, int i)
-{
-	if (str)
-		printf("%s\n", str);
-	return (i);
-}
-
 // input check using safe aoit
+// should used stderror, fprintf(stderr, "%s\n", str); but not
 // return 0 as error code, 
 int	pre_check_argv(int argc, char **argv)
 {
 	if (argc != 5 && argc != 6)
-		return (err_return_int("wrong ac nbr", 0));
+	{
+		printf("Error: %s\n", "wrong argument number");
+		return (0);
+	}
 	if (!safe_atoi(argv[1]) || !safe_atoi(argv[2])
 		|| !safe_atoi(argv[3]) || !safe_atoi(argv[4]))
-		return (err_return_int("invalid ac", 0));
+	{
+		printf("Error: %s\n", "invalid argument");
+		return (0);
+	}
 	if (argv[5] && !safe_atoi(argv[5]))
-		return (err_return_int("invalid ac", 0));
+	{
+		printf("Error: %s\n", "invalid argument");
+		return (0);
+	}
 	return (1);
 }

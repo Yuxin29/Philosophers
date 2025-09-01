@@ -1,4 +1,15 @@
 /* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   philo.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: yuwu <yuwu@student.42.fr>                  +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/09/01 18:07:54 by yuwu              #+#    #+#             */
+/*   Updated: 2025/09/01 18:14:44 by yuwu             ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "philo.h"
 
 // check if all philo has eateing enough
@@ -30,8 +41,8 @@ static int	check_done(t_table *table)
 	return (1);
 }
 
-// check if any philo is dead
-/* ************************************************************************** */
+// check if any philo is dead from staring
+// return 1 for dead and 0 for not
 static int	check_dead(t_table *table)
 {
 	int			i;
@@ -72,11 +83,12 @@ static int	check_dead(t_table *table)
 	return (0);
 }
 
+// call this in init
 void	*monitor(void *arg)
 {
 	t_table	*table;
 
-    table = (t_table *)arg;
+	table = (t_table *)arg;
 	while (1)
 	{
 		pthread_mutex_lock(&table->state_lock);

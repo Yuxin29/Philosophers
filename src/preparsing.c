@@ -1,5 +1,19 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   preparsing.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: yuwu <marvin@42.fr>                        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/09/01 18:08:07 by yuwu              #+#    #+#             */
+/*   Updated: 2025/09/01 18:08:09 by yuwu             ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "philo.h"
 
+// the input has to be pos int,
+// return 1 on valid and 0 on invalid
 static int	ft_is_pos_int(char *nptr)
 {
 	char	c;
@@ -22,8 +36,9 @@ static int	ft_is_pos_int(char *nptr)
 	return (1);
 }
 
-// is_numeric checked, over_flow is not checked yes
-// return 0 as error code
+// firsr check positive int
+// then do atoi
+// return 0 as error code for overflowing
 int	safe_atoi(char *nptr)
 {
 	int	output;
@@ -45,7 +60,8 @@ int	safe_atoi(char *nptr)
 	return (output);
 }
 
-// printf("%s\n", str); //should I print stderr??
+// printf("%s\n", str); 
+//should I print stderr??
 int	err_return_int(char *str, int i)
 {
 	if (str)
@@ -53,8 +69,8 @@ int	err_return_int(char *str, int i)
 	return (i);
 }
 
-// input check
-// return 0 as error code
+// input check using safe aoit
+// return 0 as error code, 
 int	pre_check_argv(int argc, char **argv)
 {
 	if (argc != 5 && argc != 6)

@@ -1,6 +1,19 @@
 /* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parsing.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: yuwu <yuwu@student.42.fr>                  +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/09/01 18:07:36 by yuwu              #+#    #+#             */
+/*   Updated: 2025/09/01 18:09:09 by yuwu             ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "philo.h"
 
+// initiate all the int in the table
+// if no argv5, then no defined minimal eating time, set it to -1
 static void	init_table_ints(char **argv, t_table *table)
 {
 	table->nbr = safe_atoi(argv[1]);
@@ -16,6 +29,7 @@ static void	init_table_ints(char **argv, t_table *table)
 	table->starting_time_ms = now_ms();
 }
 
+// refill all the philos around the table
 static void	init_philos(t_table *table)
 {
 	int		i;
@@ -39,6 +53,7 @@ static void	init_philos(t_table *table)
 	table->philos[i].table = table;
 }
 
+// initiate all the mutex and fork mutex
 static void	init_mutex(t_table *table)
 {
 	int		i;
@@ -86,8 +101,10 @@ static void	create_and_join_threads(t_table *philo_table)
 	return ;
 }
 
-// argv prechecked
-// no defined minimal eating time, ends if one of the philo dies out of hunger
+// argv prechecked befire this one 
+// first malloc in this one
+// in do all the initiate
+// and create and join threads
 t_table	*init_table(char **argv)
 {
 	t_table	*table;
@@ -98,7 +115,6 @@ t_table	*init_table(char **argv)
 		printf("%s\n", "malloc table failed");
 		return (NULL);
 	}
-	init_table_ints(argv, table);
 	table->philos = malloc(sizeof(t_philo) * table->nbr);
 	table->forks = malloc(sizeof(pthread_mutex_t) * table->nbr);
 	if (!table->philos || !table->forks)
@@ -107,6 +123,7 @@ t_table	*init_table(char **argv)
 		printf("%s\n", "malloc inside table failed");
 		return (NULL);
 	}
+	init_table_ints(argv, table);
 	init_philos(table);
 	init_mutex(table);
 	create_and_join_threads(table);

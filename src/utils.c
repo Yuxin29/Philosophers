@@ -1,4 +1,15 @@
 /* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   utils.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: yuwu <yuwu@student.42.fr>                  +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/09/01 18:08:28 by yuwu              #+#    #+#             */
+/*   Updated: 2025/09/01 18:08:55 by yuwu             ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "philo.h"
 
 // I am going to use millisecond,  毫秒 in my philosopher
@@ -19,7 +30,7 @@ uint64_t	now_ms(void)
 	return (time_ms);
 }
 
-// returns the comparative time stamp only
+// do a sleep
 void	ft_to_sleep(t_table *table)
 {
 	useconds_t	sleep_period;
@@ -29,6 +40,7 @@ void	ft_to_sleep(t_table *table)
 	return ;
 }
 
+// do a eat
 void	ft_to_eat(t_table *table)
 {
 	useconds_t	eating_period;
@@ -38,6 +50,7 @@ void	ft_to_eat(t_table *table)
 	return ;
 }
 
+// free the table and philos, and destroy all the mutex
 void	ft_free_table(t_table *table)
 {
 	int	i;

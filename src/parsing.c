@@ -6,7 +6,7 @@
 /*   By: yuwu <yuwu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/01 18:07:36 by yuwu              #+#    #+#             */
-/*   Updated: 2025/09/01 20:18:49 by yuwu             ###   ########.fr       */
+/*   Updated: 2025/09/02 19:05:41 by yuwu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,9 @@ static void	init_mutex(t_table *table)
 // pthread_join: join with a terminated thread
 // SYNOPSIS  
 // int pthread_join(pthread_t thread, void **retval);
-static void	create_and_join_threads(t_table *philo_table)
+// pthread_create / pthread_join: return 0 success and 1 on eoor
+//return 1 on suc and 0 on eoor
+static int	create_and_join_threads(t_table *philo_table)
 {
 	pthread_t	monitor_thread;
 	int			i;
@@ -86,19 +88,22 @@ static void	create_and_join_threads(t_table *philo_table)
 	i = 0;
 	while (i < philo_table->nbr)
 	{
-		pthread_create(&philo_table->philos[i].thread,
-			NULL, routine, &philo_table->philos[i]);
+		if (pthread_create(&philo_table->philos[i].thread, NULL, routine, &philo_table->philos[i]))
+			return (0);
 		i++;
 	}
-	pthread_create(&monitor_thread, NULL, monitor, philo_table);
+	if (pthread_create(&monitor_thread, NULL, monitor, philo_table))
+		return (0);
 	i = 0;
 	while (i < philo_table->nbr)
 	{
-		pthread_join(philo_table->philos[i].thread, NULL);
+		if (pthread_join(philo_table->philos[i].thread, NULL))
+			return (0);
 		i++;
 	}
-	pthread_join(monitor_thread, NULL);
-	return ;
+	if (pthread_join(monitor_thread, NULL))
+		return (0);
+	return (1);
 }
 
 // argv prechecked befire this one 
@@ -125,6 +130,7 @@ t_table	*init_table(char **argv)
 	}
 	init_philos(table);
 	init_mutex(table);
-	create_and_join_threads(table);
+	if (!create_and_join_threads(table))
+		return (NULL);
 	return (table);
 }

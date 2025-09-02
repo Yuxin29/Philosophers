@@ -6,7 +6,7 @@
 /*   By: yuwu <yuwu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/01 18:07:54 by yuwu              #+#    #+#             */
-/*   Updated: 2025/09/01 20:20:35 by yuwu             ###   ########.fr       */
+/*   Updated: 2025/09/02 18:23:40 by yuwu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,6 @@ int	ft_is_stoped(t_table *table)
 static int	check_done(t_table *table)
 {
 	int			i;
-	int			n;
 	uint64_t	timestamp;
 
 	i = 0;
@@ -51,9 +50,9 @@ static int	check_done(t_table *table)
 			table->stop = 1;
 		pthread_mutex_unlock(&table->state_lock);
 		timestamp = now_ms() - table->starting_time;
-		n = table->total_eating_time;
 		pthread_mutex_lock(&table->printf_lock);
-		printf("%lu, all philos ate %d times (enough)\n", timestamp, n);
+		//printf("%s\n", "every philos has eaten enough");
+		printf("%lu all philos ate enough times\n", timestamp);
 		pthread_mutex_unlock(&table->printf_lock);
 	}
 	return (1);
@@ -83,7 +82,7 @@ static int	check_dead(t_table *table)
 				table->stop = 1;
 				pthread_mutex_unlock(&table->state_lock);
 				pthread_mutex_lock(&table->printf_lock);
-				printf("%lu, %d died\n", (now_ms() - table->starting_time), i + 1);
+				printf("%lu %d died\n", (now_ms() - table->starting_time), i + 1);
 				pthread_mutex_unlock(&table->printf_lock);
 			}
 			return (1);

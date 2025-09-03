@@ -6,7 +6,7 @@
 /*   By: yuwu <yuwu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/01 18:07:54 by yuwu              #+#    #+#             */
-/*   Updated: 2025/09/03 13:39:15 by yuwu             ###   ########.fr       */
+/*   Updated: 2025/09/03 13:48:37 by yuwu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,14 +49,16 @@ static int	check_done(t_table *table)
 			return (0);
 		i++;
 	}
-	pthread_mutex_lock(&table->state_lock);
-    if (!table->stop)
-        table->stop = 1;
-    pthread_mutex_unlock(&table->state_lock);
-	timestamp = now_ms() - table->starting_time;
-	pthread_mutex_lock(&table->printf_lock);
-	printf("%llu all philos ate enough times\n", (unsigned long long)timestamp);
-	pthread_mutex_unlock(&table->printf_lock);
+	if (!ft_is_stoped(table))
+	{
+		pthread_mutex_lock(&table->state_lock);
+		table->stop = 1;
+		pthread_mutex_unlock(&table->state_lock);
+		timestamp = now_ms() - table->starting_time;
+		pthread_mutex_lock(&table->printf_lock);
+		printf("%llu all philos ate enough times\n", (unsigned long long)timestamp);
+		pthread_mutex_unlock(&table->printf_lock);
+	}
 	return (1);
 }
 
@@ -108,7 +110,7 @@ void	*monitor(void *arg)
 			break ;
 		if (check_dead(table))
 			break ;
-		usleep(1000);
+		usleep(500);
 	}
 	return (NULL);
 }

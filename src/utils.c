@@ -6,7 +6,7 @@
 /*   By: yuwu <yuwu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/01 18:08:28 by yuwu              #+#    #+#             */
-/*   Updated: 2025/09/03 11:18:28 by yuwu             ###   ########.fr       */
+/*   Updated: 2025/09/03 11:25:15 by yuwu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ uint64_t	now_ms(void)
 	struct timeval	current_time;
 	uint64_t		time_ms;
 
-	gettimeofday(&current_time, NULL)
+	gettimeofday(&current_time, NULL);
 	time_ms = (current_time.tv_sec * 1000) + (current_time.tv_usec / 1000);
 	return (time_ms);
 }

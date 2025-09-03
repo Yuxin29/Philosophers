@@ -6,27 +6,11 @@
 /*   By: yuwu <yuwu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/01 18:08:19 by yuwu              #+#    #+#             */
-/*   Updated: 2025/09/03 11:18:08 by yuwu             ###   ########.fr       */
+/*   Updated: 2025/09/03 13:40:19 by yuwu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
-
-static void	check_one_philo(t_philo *philo, int *first)
-{
-	*first = philo->fork_l;
-	pthread_mutex_lock(&philo->table->forks[*first]);
-	if (!ft_is_stoped(philo->table))
-	{
-		pthread_mutex_lock(&philo->table->printf_lock);
-		printf("%lu %d has taken a fork\n",
-			(uint64_t)(now_ms() - philo->table->starting_time), philo->id + 1);
-		pthread_mutex_unlock(&philo->table->printf_lock);
-		usleep(philo->table->to_die_time * 1000);
-	}
-	pthread_mutex_unlock(&philo->table->forks[*first]);
-	return ;
-}
 
 static void	get_fork_nbr(t_philo *philo, int *first, int *second)
 {
@@ -42,6 +26,22 @@ static void	get_fork_nbr(t_philo *philo, int *first, int *second)
 	}
 }
 
+static void	check_one_philo(t_philo *philo, int *first)
+{
+	*first = philo->fork_l;
+	pthread_mutex_lock(&philo->table->forks[*first]);
+	if (!ft_is_stoped(philo->table))
+	{
+		pthread_mutex_lock(&philo->table->printf_lock);
+		printf("%llu %d has taken a fork\n",
+			(unsigned long long)(now_ms() - philo->table->starting_time), philo->id + 1);
+		pthread_mutex_unlock(&philo->table->printf_lock);
+		usleep(philo->table->to_die_time * 1000);
+	}
+	pthread_mutex_unlock(&philo->table->forks[*first]);
+	return ;
+}
+
 //return 0 as not doing anything
 static int	take_forks_and_check(t_philo *philo, int *first, int *second)
 {
@@ -53,8 +53,8 @@ static int	take_forks_and_check(t_philo *philo, int *first, int *second)
 		return (0);
 	}
 	pthread_mutex_lock(&philo->table->printf_lock);
-	printf("%lu %d has taken a fork\n",
-		(uint64_t)(now_ms() - philo->table->starting_time), philo->id + 1);
+	printf("%llu %d has taken a fork\n",
+		(unsigned long long)(now_ms() - philo->table->starting_time), philo->id + 1);
 	pthread_mutex_unlock(&philo->table->printf_lock);
 	pthread_mutex_lock(&philo->table->forks[*second]);
 	if (ft_is_stoped(philo->table))
@@ -64,8 +64,8 @@ static int	take_forks_and_check(t_philo *philo, int *first, int *second)
 		return (0);
 	}
 	pthread_mutex_lock(&philo->table->printf_lock);
-	printf("%lu %d has taken a fork\n",
-		(uint64_t)(now_ms() - philo->table->starting_time), philo->id + 1);
+	printf("%llu %d has taken a fork\n",
+		(unsigned long long)(now_ms() - philo->table->starting_time), philo->id + 1);
 	pthread_mutex_unlock(&philo->table->printf_lock);
 	return (1);
 }
@@ -90,7 +90,7 @@ static void	routine_eat(t_philo *philo)
 	if (!ft_is_stoped(philo->table))
 	{
 		pthread_mutex_lock(&philo->table->printf_lock);
-		printf("%lu %d is eating\n", timestamp, philo->id + 1);
+		printf("%llu %d is eating\n", (unsigned long long)timestamp, philo->id + 1);
 		pthread_mutex_unlock(&philo->table->printf_lock);
 	}
 	ft_to_eat(philo->table);
@@ -109,7 +109,7 @@ static void	routine_sleep(t_philo *philo)
 	if (!ft_is_stoped(philo->table))
 	{
 		pthread_mutex_lock(&philo->table->printf_lock);
-		printf("%lu %d is sleeping\n", timestamp, philo->id + 1);
+		printf("%llu %d is sleeping\n", (unsigned long long)timestamp, philo->id + 1);
 		pthread_mutex_unlock(&philo->table->printf_lock);
 	}
 	ft_to_sleep(philo->table);
@@ -127,7 +127,7 @@ static void	routine_think(t_philo *philo)
 	if (!ft_is_stoped(philo->table))
 	{
 		pthread_mutex_lock(&philo->table->printf_lock);
-		printf("%lu %d is thinking\n", timestamp, philo->id + 1);
+		printf("%llu %d is thinking\n", (unsigned long long)timestamp, philo->id + 1);
 		pthread_mutex_unlock(&philo->table->printf_lock);
 	}
 }
@@ -145,7 +145,7 @@ void	*routine(void *arg)
 		return (NULL);
 	}
 	if (philo->id % 2)
-		usleep(500);
+		usleep(1000);
 	while (1)
 	{
 		if (ft_is_stoped(philo->table))
@@ -157,7 +157,7 @@ void	*routine(void *arg)
 		if (ft_is_stoped(philo->table))
 			break ;
 		routine_think(philo);
-		usleep(500);
+		usleep(1000);
 	}
 	return (NULL);
 }

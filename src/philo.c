@@ -6,7 +6,7 @@
 /*   By: yuwu <yuwu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/01 18:07:54 by yuwu              #+#    #+#             */
-/*   Updated: 2025/09/03 11:02:09 by yuwu             ###   ########.fr       */
+/*   Updated: 2025/09/03 13:39:15 by yuwu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,26 +35,28 @@ static int	check_done(t_table *table)
 {
 	int			i;
 	uint64_t	timestamp;
+	int			meals;
 
 	i = 0;
 	if (table->total_eating_time == -1)
 		return (0);
 	while (i < table->nbr)
 	{
-		if (table->philos[i].meals_eaten < table->total_eating_time)
+		pthread_mutex_lock(&table->state_lock);
+		meals = table->philos[i].meals_eaten;
+		pthread_mutex_unlock(&table->state_lock);
+		if (meals < table->total_eating_time)
 			return (0);
 		i++;
 	}
-	if (!ft_is_stoped(table))
-	{
-		pthread_mutex_lock(&table->state_lock);
-		table->stop = 1;
-		pthread_mutex_unlock(&table->state_lock);
-		timestamp = now_ms() - table->starting_time;
-		pthread_mutex_lock(&table->printf_lock);
-		printf("%lu all philos ate enough times\n", timestamp);
-		pthread_mutex_unlock(&table->printf_lock);
-	}
+	pthread_mutex_lock(&table->state_lock);
+    if (!table->stop)
+        table->stop = 1;
+    pthread_mutex_unlock(&table->state_lock);
+	timestamp = now_ms() - table->starting_time;
+	pthread_mutex_lock(&table->printf_lock);
+	printf("%llu all philos ate enough times\n", (unsigned long long)timestamp);
+	pthread_mutex_unlock(&table->printf_lock);
 	return (1);
 }
 
@@ -82,7 +84,7 @@ static int	check_dead(t_table *table)
 				table->stop = 1;
 				pthread_mutex_unlock(&table->state_lock);
 				pthread_mutex_lock(&table->printf_lock);
-				printf("%lu %d died\n", (now_ms() - table->starting_time), i + 1);
+				printf("%llu %d died\n", (unsigned long long)(now_ms() - table->starting_time), i + 1);
 				pthread_mutex_unlock(&table->printf_lock);
 			}
 			return (1);
@@ -106,7 +108,7 @@ void	*monitor(void *arg)
 			break ;
 		if (check_dead(table))
 			break ;
-		usleep(500);
+		usleep(1000);
 	}
 	return (NULL);
 }

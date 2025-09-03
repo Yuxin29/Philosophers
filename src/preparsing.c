@@ -6,7 +6,7 @@
 /*   By: yuwu <yuwu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/01 18:08:07 by yuwu              #+#    #+#             */
-/*   Updated: 2025/09/01 18:32:18 by yuwu             ###   ########.fr       */
+/*   Updated: 2025/09/03 11:05:02 by yuwu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,4 +82,29 @@ int	pre_check_argv(int argc, char **argv)
 		return (0);
 	}
 	return (1);
+}
+
+// free the table and philos, and destroy all the mutex
+void	ft_free_table(t_table *table)
+{
+	int	i;
+
+	i = 0;
+	if (!table)
+		return ;
+	if (table->philos)
+		free(table->philos);
+	if (table->forks)
+	{
+		while (i < table->nbr)
+		{
+			pthread_mutex_destroy(&table->forks[i]);
+			i++;
+		}
+		free(table->forks);
+	}
+	pthread_mutex_destroy(&table->printf_lock);
+	pthread_mutex_destroy(&table->state_lock);
+	free (table);
+	return ;
 }

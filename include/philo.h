@@ -6,7 +6,7 @@
 /*   By: yuwu <yuwu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/01 18:08:45 by yuwu              #+#    #+#             */
-/*   Updated: 2025/09/01 18:14:16 by yuwu             ###   ########.fr       */
+/*   Updated: 2025/09/03 11:05:36 by yuwu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,26 +58,26 @@ typedef struct s_table
 	pthread_mutex_t	state_lock;			//protext stop and dead
 }					t_table;
 
-//philo.c 4/5
+//philo.c			5/5
 //int main(int argc, char **argv)
-int 		ft_is_stoped(t_table *table);
+int			ft_is_stoped(t_table *table);
 void		*monitor(void *arg);
 
 // preparsing.c		4/5
 int			safe_atoi(char *nptr);
 int			pre_check_argv(int argc, char **argv);
+void		ft_free_table(t_table *table);
 
 // parsing.c				5/5
 // I parse the input and put it to the t_table
 t_table		*init_table(char **argv);
 
-// utils.c	4/5
+// utils.c			4/5
 uint64_t	now_ms(void);
 void		ft_to_sleep(t_table *table);
 void		ft_to_eat(t_table *table);
-void		ft_free_table(t_table *table);
 
-//routine.c 5/5
+//routine.c 		6/5
 void		*routine(void *arg); // not meaningful, redifine later
 
 #endif

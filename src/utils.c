@@ -6,7 +6,7 @@
 /*   By: yuwu <yuwu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/01 18:08:28 by yuwu              #+#    #+#             */
-/*   Updated: 2025/09/01 19:52:37 by yuwu             ###   ########.fr       */
+/*   Updated: 2025/09/03 11:18:28 by yuwu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,7 @@ uint64_t	now_ms(void)
 	struct timeval	current_time;
 	uint64_t		time_ms;
 
-	if (gettimeofday(&current_time, NULL) == -1)
-		return (0);
+	gettimeofday(&current_time, NULL)
 	time_ms = (current_time.tv_sec * 1000) + (current_time.tv_usec / 1000);
 	return (time_ms);
 }
@@ -52,29 +51,4 @@ void	ft_to_eat(t_table *table)
 	duration = table->eat_time;
 	while (!table->stop && (now_ms() - start) < duration)
 		usleep(50);
-}
-
-// free the table and philos, and destroy all the mutex
-void	ft_free_table(t_table *table)
-{
-	int	i;
-
-	i = 0;
-	if (!table)
-		return ;
-	if (table->philos)
-		free(table->philos);
-	if (table->forks)
-	{
-		while (i < table->nbr)
-		{
-			pthread_mutex_destroy(&table->forks[i]);
-			i++;
-		}
-		free(table->forks);
-	}
-	pthread_mutex_destroy(&table->printf_lock);
-	pthread_mutex_destroy(&table->state_lock);
-	free (table);
-	return ;
 }

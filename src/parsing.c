@@ -6,7 +6,7 @@
 /*   By: yuwu <yuwu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/01 18:07:36 by yuwu              #+#    #+#             */
-/*   Updated: 2025/09/02 19:05:41 by yuwu             ###   ########.fr       */
+/*   Updated: 2025/09/03 11:18:49 by yuwu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,7 +88,8 @@ static int	create_and_join_threads(t_table *philo_table)
 	i = 0;
 	while (i < philo_table->nbr)
 	{
-		if (pthread_create(&philo_table->philos[i].thread, NULL, routine, &philo_table->philos[i]))
+		if (pthread_create(&philo_table->philos[i].thread, NULL,
+				routine, &philo_table->philos[i]))
 			return (0);
 		i++;
 	}

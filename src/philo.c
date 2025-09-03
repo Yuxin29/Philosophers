@@ -6,7 +6,7 @@
 /*   By: yuwu <yuwu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/01 18:07:54 by yuwu              #+#    #+#             */
-/*   Updated: 2025/09/02 18:23:40 by yuwu             ###   ########.fr       */
+/*   Updated: 2025/09/03 11:02:09 by yuwu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ int	ft_is_stoped(t_table *table)
 // return 0 for not done, 1 for done
 // if any one philo has not eaten enough, not done
 // if done 
+//printf("%s\n", "every philos has eaten enough");
 static int	check_done(t_table *table)
 {
 	int			i;
@@ -47,11 +48,10 @@ static int	check_done(t_table *table)
 	if (!ft_is_stoped(table))
 	{
 		pthread_mutex_lock(&table->state_lock);
-			table->stop = 1;
+		table->stop = 1;
 		pthread_mutex_unlock(&table->state_lock);
 		timestamp = now_ms() - table->starting_time;
 		pthread_mutex_lock(&table->printf_lock);
-		//printf("%s\n", "every philos has eaten enough");
 		printf("%lu all philos ate enough times\n", timestamp);
 		pthread_mutex_unlock(&table->printf_lock);
 	}

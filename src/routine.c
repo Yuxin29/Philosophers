@@ -6,32 +6,30 @@
 /*   By: yuwu <yuwu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/01 18:08:19 by yuwu              #+#    #+#             */
-/*   Updated: 2025/09/02 19:44:05 by yuwu             ###   ########.fr       */
+/*   Updated: 2025/09/03 11:18:08 by yuwu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-static int check_one_philo(t_philo *philo, int *first)
+static void	check_one_philo(t_philo *philo, int *first)
 {
 	*first = philo->fork_l;
 	pthread_mutex_lock(&philo->table->forks[*first]);
-	
 	if (!ft_is_stoped(philo->table))
 	{
 		pthread_mutex_lock(&philo->table->printf_lock);
-		printf("%lu %d has taken a fork\n", (uint64_t)(now_ms() - philo->table->starting_time), philo->id + 1);
+		printf("%lu %d has taken a fork\n",
+			(uint64_t)(now_ms() - philo->table->starting_time), philo->id + 1);
 		pthread_mutex_unlock(&philo->table->printf_lock);
+		usleep(philo->table->to_die_time * 1000);
 	}
 	pthread_mutex_unlock(&philo->table->forks[*first]);
-	return (0);
+	return ;
 }
 
-//return 0 as not doing anything
-static int	take_forks_and_check(t_philo *philo, int *first, int *second)
+static void	get_fork_nbr(t_philo *philo, int *first, int *second)
 {
-	if (philo->fork_r == -1)
-	 	return (check_one_philo(philo, first));
 	if (philo->fork_l < philo->fork_r)
 	{
 		*first = philo->fork_l;
@@ -42,6 +40,12 @@ static int	take_forks_and_check(t_philo *philo, int *first, int *second)
 		*first = philo->fork_r;
 		*second = philo->fork_l;
 	}
+}
+
+//return 0 as not doing anything
+static int	take_forks_and_check(t_philo *philo, int *first, int *second)
+{
+	get_fork_nbr(philo, first, second);
 	pthread_mutex_lock(&philo->table->forks[*first]);
 	if (ft_is_stoped(philo->table))
 	{
@@ -49,7 +53,8 @@ static int	take_forks_and_check(t_philo *philo, int *first, int *second)
 		return (0);
 	}
 	pthread_mutex_lock(&philo->table->printf_lock);
-	printf("%lu %d has taken a fork\n", (uint64_t)(now_ms() - philo->table->starting_time), philo->id + 1);
+	printf("%lu %d has taken a fork\n",
+		(uint64_t)(now_ms() - philo->table->starting_time), philo->id + 1);
 	pthread_mutex_unlock(&philo->table->printf_lock);
 	pthread_mutex_lock(&philo->table->forks[*second]);
 	if (ft_is_stoped(philo->table))
@@ -59,7 +64,8 @@ static int	take_forks_and_check(t_philo *philo, int *first, int *second)
 		return (0);
 	}
 	pthread_mutex_lock(&philo->table->printf_lock);
-	printf("%lu %d has taken a fork\n", (uint64_t)(now_ms() - philo->table->starting_time), philo->id + 1);
+	printf("%lu %d has taken a fork\n",
+		(uint64_t)(now_ms() - philo->table->starting_time), philo->id + 1);
 	pthread_mutex_unlock(&philo->table->printf_lock);
 	return (1);
 }
@@ -72,6 +78,8 @@ static void	routine_eat(t_philo *philo)
 	int			first;
 	int			second;
 
+	if (philo->fork_r == -1)
+		return (check_one_philo(philo, &first));
 	if (!take_forks_and_check(philo, &first, &second))
 		return ;
 	pthread_mutex_lock(&philo->table->state_lock);
@@ -79,14 +87,12 @@ static void	routine_eat(t_philo *philo)
 	philo->meals_eaten += 1;
 	pthread_mutex_unlock(&philo->table->state_lock);
 	timestamp = now_ms() - philo->table->starting_time;
-	
 	if (!ft_is_stoped(philo->table))
 	{
 		pthread_mutex_lock(&philo->table->printf_lock);
 		printf("%lu %d is eating\n", timestamp, philo->id + 1);
 		pthread_mutex_unlock(&philo->table->printf_lock);
 	}
-	
 	ft_to_eat(philo->table);
 	pthread_mutex_unlock(&philo->table->forks[second]);
 	pthread_mutex_unlock(&philo->table->forks[first]);
@@ -100,14 +106,12 @@ static void	routine_sleep(t_philo *philo)
 	if (ft_is_stoped(philo->table))
 		return ;
 	timestamp = now_ms() - philo->table->starting_time;
-	
 	if (!ft_is_stoped(philo->table))
 	{
 		pthread_mutex_lock(&philo->table->printf_lock);
 		printf("%lu %d is sleeping\n", timestamp, philo->id + 1);
 		pthread_mutex_unlock(&philo->table->printf_lock);
 	}
-	
 	ft_to_sleep(philo->table);
 }
 
@@ -120,7 +124,6 @@ static void	routine_think(t_philo *philo)
 	if (ft_is_stoped(philo->table))
 		return ;
 	timestamp = now_ms() - philo->table->starting_time;
-	
 	if (!ft_is_stoped(philo->table))
 	{
 		pthread_mutex_lock(&philo->table->printf_lock);
@@ -154,7 +157,7 @@ void	*routine(void *arg)
 		if (ft_is_stoped(philo->table))
 			break ;
 		routine_think(philo);
-		usleep(50);
+		usleep(500);
 	}
 	return (NULL);
 }

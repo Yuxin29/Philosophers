@@ -6,7 +6,7 @@
 /*   By: yuwu <yuwu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/01 18:07:36 by yuwu              #+#    #+#             */
-/*   Updated: 2025/09/03 11:18:49 by yuwu             ###   ########.fr       */
+/*   Updated: 2025/09/05 12:37:24 by yuwu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,16 +117,16 @@ t_table	*init_table(char **argv)
 
 	table = malloc(sizeof(t_table) * 1);
 	if (!table)
-		return (printf("%s\n", "malloc table failed"), NULL);
+		return (printf("%s\n", "Error: malloc table failed"), NULL);
 	init_table_ints(argv, table);
 	table->philos = malloc(sizeof(t_philo) * table->nbr);
 	if (!table->philos)
-		return (printf("%s\n", "malloc inside table failed"), NULL);
+		return (printf("%s\n", "Error: malloc inside table failed"), NULL);
 	table->forks = malloc(sizeof(pthread_mutex_t) * table->nbr);
 	if (!table->forks)
 	{
 		free(table->philos);
-		printf("%s\n", "malloc inside table failed");
+		printf("%s\n", "Error: malloc inside table failed");
 		return (NULL);
 	}
 	init_philos(table);

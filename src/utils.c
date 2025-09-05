@@ -6,7 +6,7 @@
 /*   By: yuwu <yuwu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/01 18:08:28 by yuwu              #+#    #+#             */
-/*   Updated: 2025/09/03 11:25:15 by yuwu             ###   ########.fr       */
+/*   Updated: 2025/09/05 11:37:39 by yuwu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,25 +30,59 @@ uint64_t	now_ms(void)
 }
 
 // do a sleep
-void	ft_to_sleep(t_table *table)
+void	smart_usleep(uint64_t duration, t_table *table)
 {
 	uint64_t	start;
-	useconds_t	duration;
 
 	start = now_ms();
-	duration = table->sleep_time;
-	while (!table->stop && (now_ms() - start) < duration)
-		usleep(50);
+	while (now_ms() - start < duration)
+	{
+		if (ft_is_stoped(table))
+			break ;
+		usleep(100);
+	}
 }
 
-// do a eat
-void	ft_to_eat(t_table *table)
+void	get_fork_nbr(t_philo *philo, int *first, int *second)
 {
-	uint64_t	start;
-	useconds_t	duration;
+	if (philo->fork_l < philo->fork_r)
+	{
+		*first = philo->fork_l;
+		*second = philo->fork_r;
+	}
+	else
+	{
+		*first = philo->fork_r;
+		*second = philo->fork_l;
+	}
+}
 
-	start = now_ms();
-	duration = table->eat_time;
-	while (!table->stop && (now_ms() - start) < duration)
-		usleep(50);
+int	pick_one_fork(t_philo *philo, int fork_id)
+{
+	pthread_mutex_lock(&philo->table->forks[fork_id]);
+	if (ft_is_stoped(philo->table))
+	{
+		pthread_mutex_unlock(&philo->table->forks[fork_id]);
+		return (0);
+	}
+	pthread_mutex_lock(&philo->table->printf_lock);
+	printf("%llu %d has taken a fork\n",
+		(unsigned long long)(now_ms() - philo->table->starting_time),
+		philo->id + 1);
+	pthread_mutex_unlock(&philo->table->printf_lock);
+	return (1);
+}
+
+// precheck stop,
+// need to prptect the stop shen check, 
+// because it might be changed by other thrd
+// return 1 for stop and 0 for not
+int	ft_is_stoped(t_table *table)
+{
+	int	stop;
+
+	pthread_mutex_lock(&table->state_lock);
+	stop = table->stop;
+	pthread_mutex_unlock(&table->state_lock);
+	return (stop);
 }

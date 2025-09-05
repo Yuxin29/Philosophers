@@ -6,35 +6,25 @@
 /*   By: yuwu <yuwu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/01 18:07:54 by yuwu              #+#    #+#             */
-/*   Updated: 2025/09/03 13:48:37 by yuwu             ###   ########.fr       */
+/*   Updated: 2025/09/05 11:13:44 by yuwu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
-
-// precheck stop,
-// need to prptect the stop shen check, 
-// because it might be changed by other thrd
-// return 1 for stop and 0 for not
-int	ft_is_stoped(t_table *table)
-{
-	int	stop;
-
-	pthread_mutex_lock(&table->state_lock);
-	stop = table->stop;
-	pthread_mutex_unlock(&table->state_lock);
-	return (stop);
-}
 
 // check if all philo has eateing enough
 // return 0 for not done, 1 for done
 // if any one philo has not eaten enough, not done
 // if done 
 //printf("%s\n", "every philos has eaten enough");
+//uint64_t	timestamp;
+//timestamp = now_ms() - table->starting_time;
+//pthread_mutex_lock(&table->printf_lock);
+//printf("%llu all philos ate enough times\n", (unsigned long long)timestamp);
+//pthread_mutex_unlock(&table->printf_lock);
 static int	check_done(t_table *table)
 {
 	int			i;
-	uint64_t	timestamp;
 	int			meals;
 
 	i = 0;
@@ -54,12 +44,23 @@ static int	check_done(t_table *table)
 		pthread_mutex_lock(&table->state_lock);
 		table->stop = 1;
 		pthread_mutex_unlock(&table->state_lock);
-		timestamp = now_ms() - table->starting_time;
 		pthread_mutex_lock(&table->printf_lock);
-		printf("%llu all philos ate enough times\n", (unsigned long long)timestamp);
+		printf("%s\n", "every philos has eaten enough");
 		pthread_mutex_unlock(&table->printf_lock);
 	}
 	return (1);
+}
+
+static void	set_dead(t_table *table, int *i)
+{
+	pthread_mutex_lock(&table->state_lock);
+	table->dead = 1;
+	table->stop = 1;
+	pthread_mutex_unlock(&table->state_lock);
+	pthread_mutex_lock(&table->printf_lock);
+	printf("%llu %d died\n",
+		(unsigned long long)(now_ms() - table->starting_time), *i + 1);
+	pthread_mutex_unlock(&table->printf_lock);
 }
 
 // check if any philo is dead from staring
@@ -80,15 +81,7 @@ static int	check_dead(t_table *table)
 		if ((now_ms() - last_time) >= (uint64_t)table->to_die_time)
 		{
 			if (!ft_is_stoped(table))
-			{
-				pthread_mutex_lock(&table->state_lock);
-				table->dead = 1;
-				table->stop = 1;
-				pthread_mutex_unlock(&table->state_lock);
-				pthread_mutex_lock(&table->printf_lock);
-				printf("%llu %d died\n", (unsigned long long)(now_ms() - table->starting_time), i + 1);
-				pthread_mutex_unlock(&table->printf_lock);
-			}
+				set_dead(table, &i);
 			return (1);
 		}
 		i++;

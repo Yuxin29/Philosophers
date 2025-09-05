@@ -6,7 +6,7 @@
 /*   By: yuwu <yuwu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/01 18:08:28 by yuwu              #+#    #+#             */
-/*   Updated: 2025/09/05 11:37:39 by yuwu             ###   ########.fr       */
+/*   Updated: 2025/09/05 15:35:32 by yuwu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ void	smart_usleep(uint64_t duration, t_table *table)
 
 void	get_fork_nbr(t_philo *philo, int *first, int *second)
 {
-	if (philo->fork_l < philo->fork_r)
+	if (philo->id % 2)
 	{
 		*first = philo->fork_l;
 		*second = philo->fork_r;

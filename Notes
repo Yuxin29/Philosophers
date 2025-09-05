@@ -71,7 +71,7 @@ double id philo eat first, take right fork first, and then left fork
 $ is a philo, | is the folk
     $ | $ | $ | $ | $ | $ | $ | $ | $ | $ |
 p   0   1   2   3   4   5   6   7   8   9
-f     1   2   3   4   5   6   7   8   9    0
+f     1   2   3   4   5   6   7   8   9   0
 
 their eating is not ramdom. it is arranged
 ---> a philo's routine, eat---think---sleep===eat---think---sleep
@@ -93,3 +93,7 @@ edge case:
 one philosopher,
 when there is only one philo. there can not be a fork on both left and right side,
 thus, this only philo will die from the very beginning
+
+
+DAY 9
+valgrind -q --leak-check=full --show-leak-kinds=all --track-origins=yes --tool=drd --tool=helgrind 

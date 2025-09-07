@@ -6,7 +6,7 @@
 /*   By: yuwu <yuwu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/01 18:08:19 by yuwu              #+#    #+#             */
-/*   Updated: 2025/09/05 15:27:11 by yuwu             ###   ########.fr       */
+/*   Updated: 2025/09/07 14:50:17 by yuwu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ static int	pickup_forks(t_philo *philo, int *first, int *second)
 	{
 		if (!pick_one_fork(philo, philo->fork_l))
 			return (0);
-		usleep(philo->table->to_die_time * 1000);
+		smart_usleep(philo->table->to_die_time, philo->table);
 		pthread_mutex_unlock(&philo->table->forks[philo->fork_l]);
 		return (0);
 	}
@@ -48,14 +48,14 @@ static void	routine_eat(t_philo *philo)
 	philo->last_eating_time = now_ms();
 	philo->meals_eaten += 1;
 	pthread_mutex_unlock(&philo->table->state_lock);
+	pthread_mutex_lock(&philo->table->printf_lock);
 	if (!ft_is_stoped(philo->table))
 	{
-		pthread_mutex_lock(&philo->table->printf_lock);
 		timestamp = now_ms() - philo->table->starting_time;
 		printf("%llu %d is eating\n",
-			(unsigned long long)timestamp, philo->id + 1);
-		pthread_mutex_unlock(&philo->table->printf_lock);
+			(unsigned long long)timestamp, philo->id);
 	}
+	pthread_mutex_unlock(&philo->table->printf_lock);
 	smart_usleep(philo->table->eat_time, philo->table);
 	pthread_mutex_unlock(&philo->table->forks[second]);
 	pthread_mutex_unlock(&philo->table->forks[first]);
@@ -68,14 +68,14 @@ static void	routine_sleep(t_philo *philo)
 
 	if (ft_is_stoped(philo->table))
 		return ;
+	pthread_mutex_lock(&philo->table->printf_lock);
 	if (!ft_is_stoped(philo->table))
 	{
-		pthread_mutex_lock(&philo->table->printf_lock);
 		timestamp = now_ms() - philo->table->starting_time;
 		printf("%llu %d is sleeping\n",
-			(unsigned long long)timestamp, philo->id + 1);
-		pthread_mutex_unlock(&philo->table->printf_lock);
+			(unsigned long long)timestamp, philo->id);
 	}
+	pthread_mutex_unlock(&philo->table->printf_lock);
 	smart_usleep(philo->table->sleep_time, philo->table);
 }
 
@@ -87,14 +87,14 @@ static void	routine_think(t_philo *philo)
 
 	if (ft_is_stoped(philo->table))
 		return ;
+	pthread_mutex_lock(&philo->table->printf_lock);
 	if (!ft_is_stoped(philo->table))
 	{
-		pthread_mutex_lock(&philo->table->printf_lock);
 		timestamp = now_ms() - philo->table->starting_time;
 		printf("%llu %d is thinking\n",
-			(unsigned long long)timestamp, philo->id + 1);
-		pthread_mutex_unlock(&philo->table->printf_lock);
+			(unsigned long long)timestamp, philo->id);
 	}
+	pthread_mutex_unlock(&philo->table->printf_lock);
 }
 
 // routine of a philo: eat --> sleep --> think

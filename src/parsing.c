@@ -6,7 +6,7 @@
 /*   By: yuwu <yuwu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/01 18:07:36 by yuwu              #+#    #+#             */
-/*   Updated: 2025/09/05 12:37:24 by yuwu             ###   ########.fr       */
+/*   Updated: 2025/09/07 14:22:56 by yuwu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,15 +34,15 @@ static void	init_philos(t_table *table)
 {
 	int		i;
 
-	i = 0;
-	while (i < table->nbr)
+	i = 1;
+	while (i <= table->nbr)
 	{
 		table->philos[i].id = i;
 		table->philos[i].fork_l = i;
 		if (table->nbr == 1)
 			table->philos[i].fork_r = -1;
-		else if (i == table->nbr - 1)
-			table->philos[i].fork_r = 0;
+		else if (i == table->nbr)
+			table->philos[i].fork_r = 1;
 		else
 			table->philos[i].fork_r = i + 1;
 		table->philos[i].meals_eaten = 0;
@@ -57,10 +57,10 @@ static void	init_mutex(t_table *table)
 {
 	int		i;
 
-	i = 0;
+	i = 1;
 	pthread_mutex_init(&table->printf_lock, NULL);
 	pthread_mutex_init(&table->state_lock, NULL);
-	while (i < table->nbr)
+	while (i <= table->nbr)
 	{
 		pthread_mutex_init(&table->forks[i], NULL);
 		i++;
@@ -85,8 +85,8 @@ static int	create_and_join_threads(t_table *philo_table)
 	pthread_t	monitor_thread;
 	int			i;
 
-	i = 0;
-	while (i < philo_table->nbr)
+	i = 1;
+	while (i <= philo_table->nbr)
 	{
 		if (pthread_create(&philo_table->philos[i].thread, NULL,
 				routine, &philo_table->philos[i]))
@@ -95,8 +95,8 @@ static int	create_and_join_threads(t_table *philo_table)
 	}
 	if (pthread_create(&monitor_thread, NULL, monitor, philo_table))
 		return (0);
-	i = 0;
-	while (i < philo_table->nbr)
+	i = 1;
+	while (i <= philo_table->nbr)
 	{
 		if (pthread_join(philo_table->philos[i].thread, NULL))
 			return (0);
@@ -119,10 +119,10 @@ t_table	*init_table(char **argv)
 	if (!table)
 		return (printf("%s\n", "Error: malloc table failed"), NULL);
 	init_table_ints(argv, table);
-	table->philos = malloc(sizeof(t_philo) * table->nbr);
+	table->philos = malloc(sizeof(t_philo) * (table->nbr + 1));
 	if (!table->philos)
 		return (printf("%s\n", "Error: malloc inside table failed"), NULL);
-	table->forks = malloc(sizeof(pthread_mutex_t) * table->nbr);
+	table->forks = malloc(sizeof(pthread_mutex_t) * (table->nbr + 1));
 	if (!table->forks)
 	{
 		free(table->philos);

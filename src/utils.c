@@ -6,7 +6,7 @@
 /*   By: yuwu <yuwu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/01 18:08:28 by yuwu              #+#    #+#             */
-/*   Updated: 2025/09/05 15:35:32 by yuwu             ###   ########.fr       */
+/*   Updated: 2025/09/07 15:02:05 by yuwu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,7 @@ void	get_fork_nbr(t_philo *philo, int *first, int *second)
 	}
 }
 
+// return 1 on getting fork and 0 on not getting
 int	pick_one_fork(t_philo *philo, int fork_id)
 {
 	pthread_mutex_lock(&philo->table->forks[fork_id]);
@@ -66,10 +67,17 @@ int	pick_one_fork(t_philo *philo, int fork_id)
 		return (0);
 	}
 	pthread_mutex_lock(&philo->table->printf_lock);
-	printf("%llu %d has taken a fork\n",
-		(unsigned long long)(now_ms() - philo->table->starting_time),
-		philo->id + 1);
+	if (!ft_is_stoped(philo->table))
+	{
+		printf("%llu %d has taken a fork\n", (unsigned long long)(now_ms() -
+			philo->table->starting_time), philo->id);
+	}
 	pthread_mutex_unlock(&philo->table->printf_lock);
+	if (ft_is_stoped(philo->table))
+	{
+		pthread_mutex_unlock(&philo->table->forks[fork_id]);
+		return (0);
+	}
 	return (1);
 }
 

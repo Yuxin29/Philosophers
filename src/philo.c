@@ -6,7 +6,7 @@
 /*   By: yuwu <yuwu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/01 18:07:54 by yuwu              #+#    #+#             */
-/*   Updated: 2025/09/05 15:41:55 by yuwu             ###   ########.fr       */
+/*   Updated: 2025/09/07 14:16:16 by yuwu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,10 +27,10 @@ static int	check_done(t_table *table)
 	int			i;
 	int			meals;
 
-	i = 0;
+	i = 1;
 	if (table->total_eating_time == -1)
 		return (0);
-	while (i < table->nbr)
+	while (i <= table->nbr)
 	{
 		pthread_mutex_lock(&table->state_lock);
 		meals = table->philos[i].meals_eaten;
@@ -51,7 +51,7 @@ static int	check_done(t_table *table)
 	return (1);
 }
 
-static void	set_dead(t_table *table, int *i)
+static void	set_dead(t_table *table, int i)
 {
 	pthread_mutex_lock(&table->state_lock);
 	table->dead = 1;
@@ -59,7 +59,7 @@ static void	set_dead(t_table *table, int *i)
 	pthread_mutex_unlock(&table->state_lock);
 	pthread_mutex_lock(&table->printf_lock);
 	printf("%llu %d died\n",
-		(unsigned long long)(now_ms() - table->starting_time), *i + 1);
+		(unsigned long long)(now_ms() - table->starting_time), i);
 	pthread_mutex_unlock(&table->printf_lock);
 }
 
@@ -72,8 +72,8 @@ static int	check_dead(t_table *table)
 
 	if (ft_is_stoped(table))
 		return (0);
-	i = 0;
-	while (i < table->nbr)
+	i = 1;
+	while (i <= table->nbr)
 	{
 		pthread_mutex_lock(&table->state_lock);
 		last_time = table->philos[i].last_eating_time;
@@ -81,7 +81,7 @@ static int	check_dead(t_table *table)
 		if ((now_ms() - last_time) >= (uint64_t)table->to_die_time)
 		{
 			if (!ft_is_stoped(table))
-				set_dead(table, &i);
+				set_dead(table, i);
 			return (1);
 		}
 		i++;

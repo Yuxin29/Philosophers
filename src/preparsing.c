@@ -6,7 +6,7 @@
 /*   By: yuwu <yuwu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/01 18:08:07 by yuwu              #+#    #+#             */
-/*   Updated: 2025/09/05 11:40:17 by yuwu             ###   ########.fr       */
+/*   Updated: 2025/09/07 14:15:33 by yuwu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,14 +89,14 @@ void	ft_free_table(t_table *table)
 {
 	int	i;
 
-	i = 0;
+	i = 1;
 	if (!table)
 		return ;
 	if (table->philos)
 		free(table->philos);
 	if (table->forks)
 	{
-		while (i < table->nbr)
+		while (i <= table->nbr)
 		{
 			pthread_mutex_destroy(&table->forks[i]);
 			i++;

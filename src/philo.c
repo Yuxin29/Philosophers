@@ -6,7 +6,7 @@
 /*   By: yuwu <yuwu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/01 18:07:54 by yuwu              #+#    #+#             */
-/*   Updated: 2025/09/07 16:29:19 by yuwu             ###   ########.fr       */
+/*   Updated: 2025/09/07 18:09:01 by yuwu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,6 @@ void	ft_free_table(t_table *table)
 	int	i;
 
 	i = 1;
-	if (!table)
-		return ;
 	if (table->philos)
 		free(table->philos);
 	if (table->forks)
@@ -133,6 +131,11 @@ int	main(int argc, char **argv)
 	if (!pre_check_argv(argc, argv))
 		return (-1);
 	philo_table = init_table(argv);
+	if (!philo_table)
+	{
+		printf("%s\n", "Error: initiate table failed");
+		return (-1);
+	}
 	ft_free_table(philo_table);
 	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: yuwu <yuwu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/01 18:07:36 by yuwu              #+#    #+#             */
-/*   Updated: 2025/09/07 16:29:04 by yuwu             ###   ########.fr       */
+/*   Updated: 2025/09/07 18:25:11 by yuwu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,19 +52,35 @@ static void	init_philos(t_table *table)
 }
 
 // initiate all the mutex and fork mutex
-static void	init_mutex(t_table *table)
+// int pthread_mutex_init(pthread_mutex_t *mutex,
+// const pthread_mutexattr_t *attr);
+// return 0 on suc and none_zero on failuure
+// return 0 one faile
+static int	init_mutex(t_table *table)
 {
 	int		i;
 
 	i = 1;
-	pthread_mutex_init(&table->printf_lock, NULL);
-	pthread_mutex_init(&table->state_lock, NULL);
+	if (pthread_mutex_init(&table->printf_lock, NULL) != 0)
+		return (0);
+	if (pthread_mutex_init(&table->state_lock, NULL) != 0)
+	{
+		pthread_mutex_destroy(&table->printf_lock);
+		return (0);
+	}
 	while (i <= table->nbr)
 	{
-		pthread_mutex_init(&table->forks[i], NULL);
+		if (pthread_mutex_init(&table->forks[i], NULL) != 0)
+		{
+			while (--i >= 1)
+				pthread_mutex_destroy(&table->forks[i]);
+			pthread_mutex_destroy(&table->state_lock);
+			pthread_mutex_destroy(&table->printf_lock);
+			return (0);
+		}
 		i++;
 	}
-	return ;
+	return (1);
 }
 
 // pthread_create: create a new pthread
@@ -88,20 +104,20 @@ static int	create_and_join_threads(t_table *philo_table)
 	while (i <= philo_table->nbr)
 	{
 		if (pthread_create(&philo_table->philos[i].thread, NULL,
-				routine, &philo_table->philos[i]))
+				routine, &philo_table->philos[i]) != 0)
 			return (0);
 		i++;
 	}
-	if (pthread_create(&monitor_thread, NULL, monitor, philo_table))
+	if (pthread_create(&monitor_thread, NULL, monitor, philo_table) != 0)
 		return (0);
 	i = 1;
 	while (i <= philo_table->nbr)
 	{
-		if (pthread_join(philo_table->philos[i].thread, NULL))
+		if (pthread_join(philo_table->philos[i].thread, NULL) != 0)
 			return (0);
 		i++;
 	}
-	if (pthread_join(monitor_thread, NULL))
+	if (pthread_join(monitor_thread, NULL) != 0)
 		return (0);
 	return (1);
 }
@@ -116,21 +132,25 @@ t_table	*init_table(char **argv)
 
 	table = malloc(sizeof(t_table) * 1);
 	if (!table)
-		return (printf("%s\n", "Error: malloc table failed"), NULL);
+		return (NULL);
 	init_table_ints(argv, table);
 	table->philos = malloc(sizeof(t_philo) * (table->nbr + 1));
 	if (!table->philos)
-		return (printf("%s\n", "Error: malloc inside table failed"), NULL);
+		return (free(table), NULL);
 	table->forks = malloc(sizeof(pthread_mutex_t) * (table->nbr + 1));
 	if (!table->forks)
+		return (free(table), free(table->philos), NULL);
+	init_philos(table);
+	if (!init_mutex(table))
 	{
 		free(table->philos);
-		printf("%s\n", "Error: malloc inside table failed");
+		free(table->forks);
+		return (free(table), NULL);
+	}
+	if (!create_and_join_threads(table))
+	{
+		ft_free_table(table);
 		return (NULL);
 	}
-	init_philos(table);
-	init_mutex(table);
-	if (!create_and_join_threads(table))
-		return (NULL);
 	return (table);
 }

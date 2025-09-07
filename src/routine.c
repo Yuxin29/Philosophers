@@ -6,7 +6,7 @@
 /*   By: yuwu <yuwu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/01 18:08:19 by yuwu              #+#    #+#             */
-/*   Updated: 2025/09/07 16:33:22 by yuwu             ###   ########.fr       */
+/*   Updated: 2025/09/07 17:41:08 by yuwu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,8 +68,6 @@ static void	routine_sleep(t_philo *philo)
 {
 	uint64_t	timestamp;
 
-	if (ft_is_stoped(philo->table))
-		return ;
 	pthread_mutex_lock(&philo->table->printf_lock);
 	if (!ft_is_stoped(philo->table))
 	{
@@ -86,8 +84,6 @@ static void	routine_think(t_philo *philo)
 {
 	uint64_t	timestamp;
 
-	if (ft_is_stoped(philo->table))
-		return ;
 	pthread_mutex_lock(&philo->table->printf_lock);
 	if (!ft_is_stoped(philo->table))
 	{

@@ -6,7 +6,7 @@
 /*   By: yuwu <yuwu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/01 18:08:07 by yuwu              #+#    #+#             */
-/*   Updated: 2025/09/07 16:29:25 by yuwu             ###   ########.fr       */
+/*   Updated: 2025/09/07 16:47:09 by yuwu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,18 +67,18 @@ int	pre_check_argv(int argc, char **argv)
 {
 	if (argc != 5 && argc != 6)
 	{
-		printf("Error: %s\n", "wrong argument number");
+		printf("Error: %s\n", "Error: wrong argument number");
 		return (0);
 	}
 	if (!safe_atoi(argv[1]) || !safe_atoi(argv[2])
 		|| !safe_atoi(argv[3]) || !safe_atoi(argv[4]))
 	{
-		printf("Error: %s\n", "invalid argument");
+		printf("Error: %s\n", "Error: invalid argument");
 		return (0);
 	}
 	if (argv[5] && !safe_atoi(argv[5]))
 	{
-		printf("Error: %s\n", "invalid argument");
+		printf("Error: %s\n", "Error: invalid argument");
 		return (0);
 	}
 	return (1);

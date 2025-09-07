@@ -6,7 +6,7 @@
 /*   By: yuwu <yuwu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/01 18:08:45 by yuwu              #+#    #+#             */
-/*   Updated: 2025/09/07 16:34:08 by yuwu             ###   ########.fr       */
+/*   Updated: 2025/09/07 16:44:13 by yuwu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ typedef struct s_table
 	t_philo			*philos;			// all the philos around the table
 	pthread_mutex_t	*forks;				//same amount as philos
 	pthread_mutex_t	printf_lock;		//protext printf overlapping
-	pthread_mutex_t	state_lock;			//protext stop and dead
+	pthread_mutex_t	state_lock;			//protext stop
 }					t_table;
 
 //philo.c			5/5

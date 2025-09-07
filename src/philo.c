@@ -6,11 +6,36 @@
 /*   By: yuwu <yuwu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/01 18:07:54 by yuwu              #+#    #+#             */
-/*   Updated: 2025/09/07 14:16:16 by yuwu             ###   ########.fr       */
+/*   Updated: 2025/09/07 16:29:19 by yuwu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+
+// free the table and philos, and destroy all the mutex
+void	ft_free_table(t_table *table)
+{
+	int	i;
+
+	i = 1;
+	if (!table)
+		return ;
+	if (table->philos)
+		free(table->philos);
+	if (table->forks)
+	{
+		while (i <= table->nbr)
+		{
+			pthread_mutex_destroy(&table->forks[i]);
+			i++;
+		}
+		free(table->forks);
+	}
+	pthread_mutex_destroy(&table->printf_lock);
+	pthread_mutex_destroy(&table->state_lock);
+	free (table);
+	return ;
+}
 
 // check if all philo has eateing enough
 // return 0 for not done, 1 for done
@@ -51,18 +76,6 @@ static int	check_done(t_table *table)
 	return (1);
 }
 
-static void	set_dead(t_table *table, int i)
-{
-	pthread_mutex_lock(&table->state_lock);
-	table->dead = 1;
-	table->stop = 1;
-	pthread_mutex_unlock(&table->state_lock);
-	pthread_mutex_lock(&table->printf_lock);
-	printf("%llu %d died\n",
-		(unsigned long long)(now_ms() - table->starting_time), i);
-	pthread_mutex_unlock(&table->printf_lock);
-}
-
 // check if any philo is dead from staring
 // return 1 for dead and 0 for not
 static int	check_dead(t_table *table)
@@ -78,10 +91,15 @@ static int	check_dead(t_table *table)
 		pthread_mutex_lock(&table->state_lock);
 		last_time = table->philos[i].last_eating_time;
 		pthread_mutex_unlock(&table->state_lock);
-		if ((now_ms() - last_time) >= (uint64_t)table->to_die_time)
+		if (!ft_is_stoped(table)
+			&& (now_ms() - last_time >= (uint64_t)table->to_die_time))
 		{
-			if (!ft_is_stoped(table))
-				set_dead(table, i);
+			pthread_mutex_lock(&table->state_lock);
+			table->stop = 1;
+			pthread_mutex_unlock(&table->state_lock);
+			pthread_mutex_lock(&table->printf_lock);
+			printf("%lu %d died\n", (now_ms() - table->starting_time), i);
+			pthread_mutex_unlock(&table->printf_lock);
 			return (1);
 		}
 		i++;
@@ -97,13 +115,11 @@ void	*monitor(void *arg)
 	table = (t_table *)arg;
 	while (1)
 	{
-		if (ft_is_stoped(table))
-			break ;
 		if (check_done(table))
 			break ;
 		if (check_dead(table))
 			break ;
-		usleep(500);
+		usleep(1000);
 	}
 	return (NULL);
 }

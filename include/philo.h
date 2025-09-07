@@ -6,7 +6,7 @@
 /*   By: yuwu <yuwu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/01 18:08:45 by yuwu              #+#    #+#             */
-/*   Updated: 2025/09/05 15:41:53 by yuwu             ###   ########.fr       */
+/*   Updated: 2025/09/07 16:34:08 by yuwu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,20 +22,15 @@
 						// pthread_mutex_init, pthread_mutex_destroy, 
 						// pthread_mutex_lock. pthread_mutex_unlocK
 
-//this is not needed, here just for info
-// struct timeval {
-//     time_t      tv_sec;   // s
-//     suseconds_t tv_usec;  // 1µs (1µs = 10^-6 s)
-// };
 typedef struct s_table	t_table;
 
 typedef struct s_philo
 {
-	int				id; //the nbr of philos: eg: 0, 1, 2, 3
-	int				fork_l;	//eg: 0
-	int				fork_r;	//eg: 1
-	int				meals_eaten; // already eaten meals;
-	pthread_t		thread;
+	int				id;				//the nbr of philos: eg: 0, 1, 2, 3
+	int				fork_l;			//eg: 1
+	int				fork_r;			//eg: 2
+	int				meals_eaten;	// already eaten meals;
+	pthread_t		thread;			// a process
 	uint64_t		last_eating_time;
 	t_table			*table;
 }					t_philo;
@@ -48,10 +43,9 @@ typedef struct s_table
 	int				eat_time;			//the time spent for each meal 
 	int				sleep_time;			//the time spent for echo sleep
 	int				total_eating_time;	//if all philos eated this number, ends
-	int				dead;				//monitoring if anyone dead
 	int				stop;				//1 for stop and
-	uint64_t		starting_time;	// this is needed
-	t_philo			*philos;
+	uint64_t		starting_time;		// this is needed
+	t_philo			*philos;			// all the philos around the table
 	pthread_mutex_t	*forks;				//same amount as philos
 	pthread_mutex_t	printf_lock;		//protext printf overlapping
 	pthread_mutex_t	state_lock;			//protext stop and dead
@@ -60,13 +54,13 @@ typedef struct s_table
 //philo.c			5/5
 // monitor death, set death, monitor done and minitor and main
 //int main(int argc, char **argv)
+void		ft_free_table(t_table *table);
 void		*monitor(void *arg);
 
-// preparsing.c		4/5
+// preparsing.c		3/5
 // 3 preparsing + 1 free
 int			safe_atoi(char *nptr);
 int			pre_check_argv(int argc, char **argv);
-void		ft_free_table(t_table *table);
 
 // parsing.c				5/5
 // I parse the input and put it to the t_table

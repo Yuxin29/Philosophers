@@ -6,7 +6,7 @@
 /*   By: yuwu <yuwu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/01 18:07:36 by yuwu              #+#    #+#             */
-/*   Updated: 2025/09/07 14:22:56 by yuwu             ###   ########.fr       */
+/*   Updated: 2025/09/07 16:29:04 by yuwu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,6 @@ static void	init_table_ints(char **argv, t_table *table)
 		table->total_eating_time = safe_atoi(argv[5]);
 	else
 		table->total_eating_time = -1;
-	table->dead = 0;
 	table->stop = 0;
 	table->starting_time = now_ms();
 }

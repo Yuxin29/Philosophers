@@ -6,7 +6,7 @@
 /*   By: yuwu <yuwu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/01 18:08:28 by yuwu              #+#    #+#             */
-/*   Updated: 2025/09/07 15:02:05 by yuwu             ###   ########.fr       */
+/*   Updated: 2025/09/07 16:32:35 by yuwu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ uint64_t	now_ms(void)
 	return (time_ms);
 }
 
-// do a sleep
+// do a process of sleep or eat
 void	smart_usleep(uint64_t duration, t_table *table)
 {
 	uint64_t	start;
@@ -43,6 +43,7 @@ void	smart_usleep(uint64_t duration, t_table *table)
 	}
 }
 
+// helpers in pick up forks
 void	get_fork_nbr(t_philo *philo, int *first, int *second)
 {
 	if (philo->id % 2)
@@ -60,6 +61,8 @@ void	get_fork_nbr(t_philo *philo, int *first, int *second)
 // return 1 on getting fork and 0 on not getting
 int	pick_one_fork(t_philo *philo, int fork_id)
 {
+	uint64_t	timestamp;
+
 	pthread_mutex_lock(&philo->table->forks[fork_id]);
 	if (ft_is_stoped(philo->table))
 	{
@@ -69,8 +72,8 @@ int	pick_one_fork(t_philo *philo, int fork_id)
 	pthread_mutex_lock(&philo->table->printf_lock);
 	if (!ft_is_stoped(philo->table))
 	{
-		printf("%llu %d has taken a fork\n", (unsigned long long)(now_ms() -
-			philo->table->starting_time), philo->id);
+		timestamp = now_ms() - philo->table->starting_time;
+		printf("%lu %d has taken a fork\n", timestamp, philo->id);
 	}
 	pthread_mutex_unlock(&philo->table->printf_lock);
 	if (ft_is_stoped(philo->table))

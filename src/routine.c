@@ -6,13 +6,14 @@
 /*   By: yuwu <yuwu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/01 18:08:19 by yuwu              #+#    #+#             */
-/*   Updated: 2025/09/07 14:50:17 by yuwu             ###   ########.fr       */
+/*   Updated: 2025/09/07 16:33:22 by yuwu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-// 
+// pick up 2 forks
+// situation of single philo / single fork checked first
 static int	pickup_forks(t_philo *philo, int *first, int *second)
 {
 	if (philo->fork_r == -1)
@@ -42,6 +43,8 @@ static void	routine_eat(t_philo *philo)
 	int			first;
 	int			second;
 
+	if (philo->id % 2 == 0)
+		usleep(500);
 	if (!pickup_forks(philo, &first, &second))
 		return ;
 	pthread_mutex_lock(&philo->table->state_lock);
@@ -52,8 +55,7 @@ static void	routine_eat(t_philo *philo)
 	if (!ft_is_stoped(philo->table))
 	{
 		timestamp = now_ms() - philo->table->starting_time;
-		printf("%llu %d is eating\n",
-			(unsigned long long)timestamp, philo->id);
+		printf("%lu %d is eating\n", timestamp, philo->id);
 	}
 	pthread_mutex_unlock(&philo->table->printf_lock);
 	smart_usleep(philo->table->eat_time, philo->table);
@@ -72,8 +74,7 @@ static void	routine_sleep(t_philo *philo)
 	if (!ft_is_stoped(philo->table))
 	{
 		timestamp = now_ms() - philo->table->starting_time;
-		printf("%llu %d is sleeping\n",
-			(unsigned long long)timestamp, philo->id);
+		printf("%lu %d is sleeping\n", timestamp, philo->id);
 	}
 	pthread_mutex_unlock(&philo->table->printf_lock);
 	smart_usleep(philo->table->sleep_time, philo->table);
@@ -91,8 +92,7 @@ static void	routine_think(t_philo *philo)
 	if (!ft_is_stoped(philo->table))
 	{
 		timestamp = now_ms() - philo->table->starting_time;
-		printf("%llu %d is thinking\n",
-			(unsigned long long)timestamp, philo->id);
+		printf("%lu %d is thinking\n", timestamp, philo->id);
 	}
 	pthread_mutex_unlock(&philo->table->printf_lock);
 }
@@ -109,8 +109,7 @@ void	*routine(void *arg)
 		routine_eat(philo);
 		return (NULL);
 	}
-	if (philo->id % 2)
-		usleep(1000);
+	usleep(1000);
 	while (1)
 	{
 		if (ft_is_stoped(philo->table))

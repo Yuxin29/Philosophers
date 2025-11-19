@@ -2,12 +2,12 @@
 **philosophers** is a concurrency project from the 42 curriculum that simulates the classic Dining Philosophers problem. The program creates multiple philosopher threads that alternate between thinking, eating, and sleeping, while ensuring proper synchronization to avoid deadlocks and race conditions.  
 
 ## Features
-- 🧱 Multi-threaded implementation using `pthread`  
-- ✅ Proper synchronization with mutexes  
-- 🕒 Accurate timing for actions (think, eat, sleep)  
-- 💥 Deadlock prevention and resource management  
-- 🧠 Supports any number of philosophers with flexible timing  
-- 🔄 Clean memory management and graceful termination  
+- Multi-threaded implementation using `pthread`  
+- Proper synchronization with mutexes  
+- Accurate timing for actions (think, eat, sleep)  
+- Deadlock prevention and resource management  
+- Supports any number of philosophers with flexible timing  
+- Clean memory management and graceful termination  
 
 ## Program Rules
 - Each philosopher must eat and think in cycles  
